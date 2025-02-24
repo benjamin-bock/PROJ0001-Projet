@@ -66,7 +66,7 @@ def calculTemperaturesEuler(t, T0, h, G):
         dT = odefunction(t[i], T[:, i], G)
         T[:, i+1] = T[: , i] + h * dT
     
-    return t, T
+    return [t, T]
  
 # Résolution numérique
 
@@ -80,13 +80,17 @@ Euler = calculTemperaturesEuler(t, T0, h, G)
 
 # Question 3
 
-def calculTemperaturesIVP(t, T0, rtol):
+# Définition de la fonction
+def calculTemperaturesIVP(t, T0, rtol, G):
     
-    tspan = [t[0], t[-1]]
-    solution = ode45(odefunction(tspan, T0, G), t, T0, method='RK45', rtol=rtol)
-    return solution.t, solution.y
+    def system(t, T):
+        return odefunction(t, T, G)
+    solution = ode45(system, tspan, T0, method='RK45', rtol=rtol)
+    return [solution.t, solution.y]
 
-IVP = calculTemperaturesIVP(t, T0, 1e-10)
+# Résolution numérique
+tspan = [t[0], t[-1]]
+IVP = calculTemperaturesIVP(t, T0, 1e-10, G)
     
 
 
