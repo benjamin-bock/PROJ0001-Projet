@@ -31,7 +31,7 @@ R =         [  0,    1    , 2,      3,     4,    5]
 R =         [cc-c1,  x,   c2-cc,   r-s,  s-c2,   w]'''
 R = np.array([0.05, 0.025 , 0.02  , 0.1, 0.183, 0.15])
 
-# Question 1
+# Question 1 ##############################################################################################################
 
 def odefunction(t, T, G):
     '''T = [  0,  1 , 2,  3,  4, 5]'''
@@ -67,7 +67,7 @@ def odefunction(t, T, G):
     
     return dT
 
-# Question 2
+# Question 2 #########################################################################################################
 
 # Définition de la fonction
 def calculTemperaturesEuler(t, T0, h, G):
@@ -88,13 +88,14 @@ def calculTemperaturesEuler(t, T0, h, G):
 
 # Données   
 T0 = np.array([15, 15, 15, 15, 15])
+T0 = T0 + 273.15
 heure, flux_chaleur = pg.PerteEtGain()
 t, G = pg.interpG(heure, flux_chaleur)
 h = 0.01
 
 Euler = calculTemperaturesEuler(t, T0, h, G)
 
-# Question 3
+# Question 3 ##########################################################################################################
 
 # Définition de la fonction
 def calculTemperaturesIVP(t, T0, rtol, G):
@@ -109,7 +110,7 @@ tspan = [t[0], t[-1]]
 rtol = 1e-10
 IVP = calculTemperaturesIVP(t, T0, rtol, G)
     
-# Question 4
+# Question 4 #############################################################################################################
 
 # Solution de référence IVP avec rtol = 1e-10
 # Ceci va servir de base de comparaison pour Euler
@@ -156,14 +157,77 @@ l'erreur ne décroît pas aussi signiicativement. Il vient alors de faire un com
 et choisir h=1e-2 qui est plus précis que 1e-1 et plus rapide que 1e-3'''
 
 
+# Question 5 #############################################################################################
 
+# Initialisation des constantes
+max_jours = 100
+jour = 1
+h = 0.01
 
+def simulation_etat_stationnaire(tspan, T0, G, h, max_jours) :
+    
 
+    # Initialisation des tableaux
+    t_tot = np.array([])
+    T_tot = np.zeros((5, 0))
+    
+    # Listes pour stocker t et T à chaque jour
+    t_list = []  # Liste pour stocker les temps t de chaque jour
+    T_list = []  # Liste pour stocker les températures T de chaque jour
+   
+    # Simulation sur plusieurs jours consécutifs
+    for jour in range(max_jours):
+        
+        # On résout l'EDO pour un jour
+        Euler = calculTemperaturesEuler(tspan, T0, h, G)
+        t = np.array(Euler[0])
+        T = np.array(Euler[1])
+        
+        # Stocker t et T dans les listes
+        t_list.append(t)
+        T_list.append(T)
+        
+        # Ajouter les résultats à la simulation totale
+        # Concatenate : t_tot[old] + t[new] = t_tot[old+new]
+        t_tot = np.concatenate((t_tot, t + jour * 24), axis = None) # Ajouter le temps en heures
+        T_tot = np.concatenate((T_tot, T), axis = 1)
+        '''Pourquoi axis=1 ? Car la concaténation se fait horizontalement (axis=0 : verticalement)
+        
+        T_tot = ([T1, :]  on aimerait ajouter T à droite de la colonne T_tot
+                 [T2, :]
+                 [T3, :]
+                 [T4, :]
+                 [T5, :])
+        
+        
+        # Les dernières valeurs de T deviennent les conditions initales pour la prochaine itération
+        # Euler[1]= on accède à la deuxième liste d'Euler; 
+        # Euler[1][:, -1]= dans la 2eme liste, on sélectionne tous les éléments de la dernière colonne'''
+        T0 = T[:, -1]
+        
+        # Vérifier les conditions d'état stationnaire
+        if jour >= 1:
+            # t va de 0 à 24 mais possède n éléments 
+            # -> On utilise len(t) en toute généralité
+            diff_T = T_tot[0, -1] - T_tot[0, -len(t) - 1]
+            
+            # Condition de stationnarité
+            if abs(diff_T) < 0.01 + 273.15 :
+                print("État stationnaire atteint après ",jour + 1, "jours.")
+                break
+    return t_tot, T_tot, t_list, T_list
 
-
-
-
-
+t_tot, T_tot, t_list, T_list = simulation_etat_stationnaire(tspan, T0, G, h, max_jours)
+    
+        
+        
+        
+        
+    
+    
+    
+    
+    
 
 
 

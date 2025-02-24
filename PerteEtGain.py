@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from scipy.interpolate import CubicSpline
 
-# QUESTION 1
+# QUESTION 1 ################################################################################################################
 
 ''' Fichier qui contient: première ligne(heure de la journée ), Deuxième ligne(flux de chaleur)
  ouvrir un fichier en lecture (par défaut) et à gérer automatiquement la fermeture 
@@ -20,7 +20,7 @@ def PerteEtGain():
 
 heure, flux_chaleur = PerteEtGain()
 
-# QUESTION 2
+# QUESTION 2 ################################################################################################################
 
 '''On interpole les données à l'aide d'une spline
  cubique car les données sont successivement 
@@ -38,7 +38,7 @@ def interpG(heure, flux_chaleur):
     G = CubicSpline(heure, flux_chaleur, bc_type='clamped')
     return t, G
 
-# QUESTION 3
+# QUESTION 3 ################################################################################################################
 
 # On appelle interpG pour stocker les valeurs dans t et G
 t, G = interpG(heure, flux_chaleur)
