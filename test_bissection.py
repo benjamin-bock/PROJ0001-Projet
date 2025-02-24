@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 24 11:09:09 2025
-
-@author: b3nja
-"""
 import numpy as np
 from RechercheRacine import bissection, secante
 
