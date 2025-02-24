@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt 
+from scipy.interpolate import CubicSpline
+
+# QUESTION 1
+
+''' Fichier qui contient: première ligne(heure de la journée ), Deuxième ligne(flux de chaleur)
+ ouvrir un fichier en lecture (par défaut) et à gérer automatiquement la fermeture 
+ du fichier lorsque le bloc de code est terminé. C'est une façon pratique et sécurisée
+ de manipuler les fichiers en Python.'''
+ 
+with open("PerteEtGain.txt") as f_valeurs: 
+    valeurs = np.loadtxt(f_valeurs)
+
+# Séparation des donnée du fichier.txt
+heure = valeurs[0, :]  #première ligne qui contient les heures de la journée 
+flux_chaleur = valeurs[1, :] #deuxième ligne qui contient G(t)
+
+# Affichage des valeurs:
+print("heures: ",heure)
+print("flux de chaleur: ",flux_chaleur)
+
+# QUESTION 2
+
+'''On interpole les données à l'aide d'une spline
+ cubique car les données sont successivement 
+ décroissantes, croissantes et de nouveau décroissantes'''
+
+# La fonction prend en argument un liste 
+# heure et flux_chaleur 
+
+def interpG(heure, flux_chaleur):
+    
+    ''' On crée une liste t de 400 éléments pour
+    avoir une pseudo-continuité entre le 
+    début et la fin de heure'''
+    t = np.linspace(heure[0], heure[-1], 400) #[-1] indexation négative : permet de pointer le dernier élément sans connaître la taille de la liste
+    G = CubicSpline(heure, flux_chaleur)
+    return t, G(t)
+
+# QUESTION 3
+
+# On appelle interpG pour stocker les valeurs dans t et G
+t, G = interpG(heure, flux_chaleur)
+
+plt.figure(figsize=(13, 9))  # Définit une taille pour éviter les problèmes d'affichage
+plt.plot(heure, flux_chaleur, 'o', label = "Données initiales" )
+plt.plot(t, G, label = "Interpolation par spline cublique"  )
+plt.grid(True)
+plt.xlabel("Heure (h)")
+plt.ylabel("Flux de chaleur (W/m²)")
+plt.legend()
+plt.show()
+
+
