@@ -1,6 +1,8 @@
 import numpy as np
 import scipy as sp
-import matplotlib as plt
+import PerteEtGain as pg
+from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
+
 
 '''Encodage des constantes
 
@@ -48,3 +50,67 @@ def odefunction(t, T, G):
     dT = dT*3600
     
     return dT
+
+# Question 2
+
+# Définition de la fonction
+def calculTemperaturesEuler(t, T0, h, G):
+    
+    # Initialisation
+    n = len(t)
+    T = np.zeros((5, n))
+    T[:, 0] = T0
+    
+    # Méthode d'Euler
+    for i in range(n-1):
+        dT = odefunction(t[i], T[:, i], G)
+        T[:, i+1] = T[: , i] + h * dT
+    
+    return t, T
+ 
+# Résolution numérique
+
+# Données   
+T0 = np.array([15, 15, 15, 15, 15])
+heure, flux_chaleur = pg.PerteEtGain()
+t, G = pg.interpG(heure, flux_chaleur)
+h = 0.01
+
+Euler = calculTemperaturesEuler(t, T0, h, G)
+
+# Question 3
+
+def calculTemperaturesIVP(t, T0, rtol):
+    
+    tspan = [t[0], t[-1]]
+    solution = ode45(odefunction(tspan, T0, G), t, T0, method='RK45', rtol=rtol)
+    return solution.t, solution.y
+
+IVP = calculTemperaturesIVP(t, T0, 1e-10)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
