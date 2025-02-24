@@ -35,7 +35,7 @@ def interpG(heure, flux_chaleur):
     avoir une pseudo-continuité entre le 
     début et la fin de heure'''
     t = np.linspace(heure[0], heure[-1], 400) #[-1] indexation négative : permet de pointer le dernier élément sans connaître la taille de la liste
-    G = CubicSpline(heure, flux_chaleur)
+    G = CubicSpline(heure, flux_chaleur, bc_type='clamped')
     return t, G
 
 # QUESTION 3

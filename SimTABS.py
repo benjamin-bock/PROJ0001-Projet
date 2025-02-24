@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 import PerteEtGain as pg
+import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
 
 '''Signification des constantes
@@ -105,16 +106,54 @@ def calculTemperaturesIVP(t, T0, rtol, G):
 
 # Résolution numérique
 tspan = [t[0], t[-1]]
-IVP = calculTemperaturesIVP(t, T0, 1e-10, G)
+rtol = 1e-10
+IVP = calculTemperaturesIVP(t, T0, rtol, G)
     
+# Question 4
 
+# Solution de référence IVP avec rtol = 1e-10
+# Ceci va servir de base de comparaison pour Euler
+t_ref, T_ref = calculTemperaturesIVP(tspan, T0, rtol, G)
 
+# Valeurs candidates de h
 
+h_test = [0.1, 0.05, 0.01, 0.005, 0.001]
 
+# Stocker les erreurs pour chaque h
+errors = []
 
+for h in h_test:
+    # Résolution avec Euler
+    t_euler, T_euler = calculTemperaturesEuler(tspan, T0, h, G)
+    
+    # Interpolation de la solution référence sur les temps d'Euler
+    T_ref_interp = np.array([np.interp(t_euler, t_ref, T_ref[i, :]) for i in range(5)])   
+    
+    # Calcul de l'erreur
+    error = np.mean(np.abs(T_euler - T_ref_interp))
+    # On stocke chaque error dans errors
+    errors.append(error)
 
+# Tracer l'erreur en fonction du pas de temps
 
+plt.figure(figsize=(10, 6))
+plt.plot(h_test, errors, 'o-', label="Erreur absolue moyenne")
 
+# Échelle logarithmique pour mieux visualiser la convergence
+plt.xscale('log')  
+plt.yscale('log')
+plt.xlabel("Pas de temps h (heures)")
+plt.ylabel("Erreur absolue moyenne")
+plt.title("Détermination du pas de temps h optimal dans la méthode d'Euler")
+plt.legend()
+plt.grid()
+plt.show()
+
+'''Le graphique montre un décroissance d'erreur plus h diminue, ce qui est logique
+car l'approximation devient de plus en plus précise. Cependant, le graphe esr représenté
+en échelle logarithmique et on remarque que même pour des valeurs de h très petite
+l'erreur ne décroît pas aussi signiicativement. Il vient alors de faire un compromis
+et choisir h=1e-2 qui est plus précis que 1e-1 et plus rapide que 1e-3'''
 
 
 
