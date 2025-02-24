@@ -3,8 +3,23 @@ import scipy as sp
 import PerteEtGain as pg
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
 
+'''Signification des constantes
+C = Capacité thermique spécifique (J/m²K)
+    Ccc = de la partie centrale du béton
+    Cc1 = de la partie supérieure du béton
+    Cc2 = de la partie inférieure du béton
+    Croom = de la pièce régulée
+    Cw = de l'eau au sein des tubes
 
-'''Encodage des constantes
+R = Résistance thermique (m²K/W)
+    Rcc−c1 = entre la partie centrale et supérieure du béton
+    Rx = entre les tubes et la partie centrale du béton
+    Rc2−cc = entre la partie inférieure et centrale du béton
+    Rr−s = entre la pièce régulée et la surface de contact
+    Rs−c2 = entre la surface de contact et la partie inférieure du béton
+    Rw = entre les tubes et l'eau circulant dans les tubes
+
+Encodage des constantes
 
 C =          [ 0,  1,  2,  3,    4 ]
 C =          [cc, c1, c2, room,  w]'''  
