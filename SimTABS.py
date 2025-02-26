@@ -3,9 +3,11 @@ import scipy as sp
 import PerteEtGain as pg
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
+from scipy.interpolate import interp1d
+
 
 '''Signification des constantes
-C = Capacité thermique spécifique (J/m²K)
+C = Capacité thermique spécifique (kJ/m²K)
     Ccc = de la partie centrale du béton
     Cc1 = de la partie supérieure du béton
     Cc2 = de la partie inférieure du béton
@@ -29,7 +31,7 @@ C = C*1000 # kJ/m²K -> J/m²K
 ''' 
 R =         [  0,    1    , 2,      3,     4,    5]
 R =         [cc-c1,  x,   c2-cc,   r-s,  s-c2,   w]'''
-R = np.array([0.05, 0.025 , 0.02  , 0.1, 0.183, 0.15])
+R = np.array([0.05, 0.025 , 0.02  , 0.1, 0.183, 0.15])  
 
 # Question 1 ##############################################################################################################
 
@@ -70,9 +72,11 @@ def odefunction(t, T, G):
 # Question 2 #########################################################################################################
 
 # Définition de la fonction
-def calculTemperaturesEuler(t, T0, h, G):
+def calculTemperaturesEuler(tspan, T0, h, G):
     
     # Initialisation
+    
+    t = np.arange(tspan[0], tspan[-1] + h, h)
     n = len(t)
     T = np.zeros((5, n))
     T[:, 0] = T0
@@ -87,28 +91,31 @@ def calculTemperaturesEuler(t, T0, h, G):
 # Résolution numérique
 
 # Données   
-T0 = np.array([15, 15, 15, 15, 15])
-T0 = T0 + 273.15
+T0 = np.array([15, 15, 15, 15, 15]) #T0 en °C
 heure, flux_chaleur = pg.PerteEtGain()
 t, G = pg.interpG(heure, flux_chaleur)
 h = 0.01
+t0 = 0 
+tf = 24
+tspan = [t0, tf]
 
-Euler = calculTemperaturesEuler(t, T0, h, G)
+Euler = calculTemperaturesEuler(tspan, T0, h, G)
 
 # Question 3 ##########################################################################################################
 
 # Définition de la fonction
-def calculTemperaturesIVP(t, T0, rtol, G):
+def calculTemperaturesIVP(tspan, T0, rtol, G):
     
     def system(t, T):
         return odefunction(t, T, G)
+    
     solution = ode45(system, tspan, T0, method='RK45', rtol=rtol)
     return [solution.t, solution.y]
 
 # Résolution numérique
 tspan = [t[0], t[-1]]
 rtol = 1e-10
-IVP = calculTemperaturesIVP(t, T0, rtol, G)
+IVP = calculTemperaturesIVP(tspan, T0, rtol, G)
     
 # Question 4 #############################################################################################################
 
@@ -128,7 +135,8 @@ for h in h_test:
     t_euler, T_euler = calculTemperaturesEuler(tspan, T0, h, G)
     
     # Interpolation de la solution référence sur les temps d'Euler
-    T_ref_interp = np.array([np.interp(t_euler, t_ref, T_ref[i, :]) for i in range(5)])   
+    T_ref_interp_func = interp1d(t_ref, T_ref, axis=1, kind='linear', fill_value="extrapolate")
+    T_ref_interp = T_ref_interp_func(t_euler)   
     
     # Calcul de l'erreur
     error = np.mean(np.abs(T_euler - T_ref_interp))
@@ -151,17 +159,17 @@ plt.grid()
 plt.show()
 
 '''Le graphique montre un décroissance d'erreur plus h diminue, ce qui est logique
-car l'approximation devient de plus en plus précise. Cependant, le graphe esr représenté
-en échelle logarithmique et on remarque que même pour des valeurs de h très petite
-l'erreur ne décroît pas aussi signiicativement. Il vient alors de faire un compromis
-et choisir h=1e-2 qui est plus précis que 1e-1 et plus rapide que 1e-3'''
+car l'approximation devient de plus en plus précise. Cependant, le graphe est représenté
+en échelle logarithmique et on remarque que la pente vaut environ 1. Ceci s'explique par
+le fait que la méthode d'Euler a un ordre de convergence de 1 {O(h)}. Il vient alors 
+de faire un compromis et choisir h=1e-2 qui est plus précis que 1e-1 et plus rapide que 1e-3'''
 
 
 # Question 5 #############################################################################################
 
 # Initialisation des constantes
 max_jours = 100
-jour = 1
+jour = 0
 h = 0.01
 
 def simulation_etat_stationnaire(tspan, T0, G, h, max_jours) :
@@ -172,20 +180,26 @@ def simulation_etat_stationnaire(tspan, T0, G, h, max_jours) :
     T_tot = np.zeros((5, 0))
     
     # Listes pour stocker t et T à chaque jour
-    t_list = []  # Liste pour stocker les temps t de chaque jour
-    T_list = []  # Liste pour stocker les températures T de chaque jour
-   
+    t_f = []  # Liste pour stocker les temps t de chaque jour
+    T_f = []  # Liste pour stocker les températures T de chaque jour
+    
+    # Stocke la température initiale de la pièce
+    T_room_jour_prec = T0[0]
+    
     # Simulation sur plusieurs jours consécutifs
     for jour in range(max_jours):
         
         # On résout l'EDO pour un jour
         Euler = calculTemperaturesEuler(tspan, T0, h, G)
-        t = np.array(Euler[0])
-        T = np.array(Euler[1])
+        t = np.array(Euler[0]) # Temps
+        T = np.array(Euler[1]) # Température
+        
+        # Mettre à jour T_room_jour_actuel
+        T_room_jour = T[0, -1] 
         
         # Stocker t et T dans les listes
-        t_list.append(t)
-        T_list.append(T)
+        t_f.append(t[-1] + jour * 24) # On stocke tf à chaque fin de journée
+        T_f.append(T_room_jour)          # On stocke T_room à chaque fin de journée
         
         # Ajouter les résultats à la simulation totale
         # Concatenate : t_tot[old] + t[new] = t_tot[old+new]
@@ -200,39 +214,38 @@ def simulation_etat_stationnaire(tspan, T0, G, h, max_jours) :
                  [T5, :])
         
         
-        # Les dernières valeurs de T deviennent les conditions initales pour la prochaine itération
-        # Euler[1]= on accède à la deuxième liste d'Euler; 
-        # Euler[1][:, -1]= dans la 2eme liste, on sélectionne tous les éléments de la dernière colonne'''
+        Les dernières valeurs de T deviennent les conditions initales pour la prochaine itération'''
         T0 = T[:, -1]
         
         # Vérifier les conditions d'état stationnaire
         if jour >= 1:
             # t va de 0 à 24 mais possède n éléments 
             # -> On utilise len(t) en toute généralité
-            diff_T = T_tot[0, -1] - T_tot[0, -len(t) - 1]
+            diff_T = abs(T_room_jour - T_room_jour_prec) # Compare T_room en fin de journée vs T_room 24h auparavant
             
             # Condition de stationnarité
-            if abs(diff_T) < 0.01 + 273.15 :
-                print("État stationnaire atteint après ",jour + 1, "jours.")
+            if diff_T < 0.01 :
+                print("État stationnaire atteint après",jour + 1,"jours.")
                 break
-    return t_tot, T_tot, t_list, T_list
+        
+        # Mettre à jour la température de référence pour le prochain jour
+        T_room_jour_prec = T_room_jour
+            
+    return t_f, T_f, jour+1, t, diff_T
 
-t_tot, T_tot, t_list, T_list = simulation_etat_stationnaire(tspan, T0, G, h, max_jours)
+t_f, T_f, jour, t, diff_T = simulation_etat_stationnaire(tspan, T0, G, h, max_jours)
     
         
-        
-        
-        
+# Visualisation
+t_f = np.array(t_f)/24
+plt.figure(figsize=(10, 6))
+plt.plot(t_f, T_f, 'o-', markersize=5)
+plt.xlabel("Nombre de jours")
+plt.ylabel("Température finale de la pièce (°C)")
+plt.title("Convergence vers l'état stationnaire")
+plt.grid(True)
+plt.show()
     
-    
-    
-    
-    
-
-
-
-
-
-
+ 
 
 
