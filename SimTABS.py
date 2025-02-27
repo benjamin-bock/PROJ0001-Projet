@@ -288,7 +288,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     
     plt.figure(figsize=(10, 6))
     plt.plot(t_f1, T_f1[:, j], 'o-', markersize=5, label="Scénario 1")
-    plt.xlabel("emps (jours)T")
+    plt.xlabel("Temps (jours)")
     plt.ylabel(f"Température finale de {nom_T[j]} (°C)")
     plt.grid(True)
     
