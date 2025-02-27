@@ -103,6 +103,14 @@ tspan = [t0, tf]
 
 Euler = calculTemperaturesEuler(tspan, T0, h, G)
 
+plt.figure(figsize=(10, 6))
+for k in range(len(T0)):
+    plt.plot(Euler[0], Euler[1][k, :], 'o-', markersize=5, label="Euler") # Tracer Euler
+plt.xlabel("Temps (h)")
+plt.ylabel("Température finale de la pièce (°C)")
+plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45")
+
+
 # Question 3 ##########################################################################################################
 
 # Définition de la fonction
@@ -118,6 +126,12 @@ def calculTemperaturesIVP(tspan, T0, rtol, G):
 tspan = [t[0], t[-1]]
 rtol = 1e-10
 IVP = calculTemperaturesIVP(tspan, T0, rtol, G)
+
+for k in range(len(T0)):
+    plt.plot(IVP[0], IVP[1][k, :], 'o-', markersize=5, label="RK45")
+plt.grid(True)
+plt.legend()
+plt.show()
     
 # Question 4 #############################################################################################################
 
@@ -148,7 +162,7 @@ def comparaisonEulerIVP(t_ref, T_ref, h_test) :
     plt.xscale('log')  
     plt.yscale('log')
     plt.xlabel("Pas de temps h (heures)")
-    plt.ylabel("Erreur absolue moyenne")
+    plt.ylabel("Erreur absolue moyenne (K)")
     plt.title("Détermination du pas de temps h optimal dans la méthode d'Euler")
     plt.legend()
     plt.grid()
@@ -253,7 +267,7 @@ T_f = np.array(T_f)
 plt.figure(figsize=(10, 6))
 plt.plot(t_f, T_f[:, 0], 'o-', markersize=5, label="T_room") # Tracer 
 plt.plot(t_f, T_f[:, 4], 'o-', markersize=5, label="T_c2") # Tracer T_c2
-plt.xlabel("Nombre de jours")
+plt.xlabel("Temps (jours)")
 plt.ylabel("Température finale de la pièce (°C)")
 plt.title("Convergence vers l'état stationnaire")
 plt.grid(True)
@@ -274,7 +288,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     
     plt.figure(figsize=(10, 6))
     plt.plot(t_f1, T_f1[:, j], 'o-', markersize=5, label="Scénario 1")
-    plt.xlabel("Nombre de jours")
+    plt.xlabel("emps (jours)T")
     plt.ylabel(f"Température finale de {nom_T[j]} (°C)")
     plt.grid(True)
     
