@@ -1,5 +1,4 @@
 import numpy as np
-import scipy as sp
 import PerteEtGain as pg
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
@@ -291,6 +290,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     plt.xlabel("Temps (jours)")
     plt.ylabel(f"Température finale de {nom_T[j]} (°C)")
     plt.grid(True)
+    plt.title(f"Évolution de la température de {nom_T[j]}, en fonction des différents scénarios")
     
     # Scnéario 2 ##############################################################
     

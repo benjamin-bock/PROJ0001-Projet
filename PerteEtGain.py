@@ -46,6 +46,7 @@ t, G = interpG(heure, flux_chaleur)
 plt.figure(figsize=(13, 9))  # Définit une taille pour éviter les problèmes d'affichage
 plt.plot(heure, flux_chaleur, 'o', label = "Données initiales" )
 plt.plot(t, G(t), label = "Interpolation par spline cublique"  )
+plt.title("Évolution du flux de chaleur, G(t), en fonction du moment de la journée")
 plt.grid(True)
 plt.xlabel("Heure (h)")
 plt.ylabel("Flux de chaleur (W/m²)")
