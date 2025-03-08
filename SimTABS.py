@@ -41,6 +41,7 @@ def odefunction(t, T, G):
     '''T = [room, t, cc, c1, c2, w]'''
     # Celsius -> Kelvin
     T = T + 273.15 
+    T += 273.15 
     
     '''Valeur de T_w'''
     if t <= 4 :
@@ -67,6 +68,7 @@ def odefunction(t, T, G):
     
     # seconde -> heure
     dT = dT*3600
+    dT *= 3600
     
     return dT
 
