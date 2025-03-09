@@ -1,5 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Mar  9 02:17:17 2025
+
+@author: b3nja
+"""
+
 import numpy as np
-from PerteEtGain import G
+import scipy as sp
+import PerteEtGain as pg
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
 from scipy.interpolate import interp1d
@@ -36,12 +44,11 @@ nom_T = ["la pièce, T_room", "l'eau dans les tubes, T_t", "la partie centrale d
 
 # Question 1 ##############################################################################################################
 
-def odefunction(t, T):
-    
+def odefunction(t, T, G):
     '''T = [  0,  1 , 2,  3,  4, 5]'''
     '''T = [room, t, cc, c1, c2, w]'''
     # Celsius -> Kelvin
-    T += 273.15 
+    T = T + 273.15 
     
     '''Valeur de T_w'''
     if t <= 4 :
@@ -62,19 +69,19 @@ def odefunction(t, T):
     else : 
         dT[1] = (-(T[1] - T[2])/R[1]) / C[4] #(5)
 
-    dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0] #(1)        
+    dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] - (T[4]-T[2])/R[2])/C[0] #(1)        
     dT[3] = (-(T[3]-T[2])/R[0]) / C[1] #(2)
     dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2] #(3)
     
     # seconde -> heure
-    dT *= 3600
+    dT = dT*3600
     
     return dT
 
 # Question 2 #########################################################################################################
 
 # Définition de la fonction
-def calculTemperaturesEuler(tspan, T0, h):
+def calculTemperaturesEuler(tspan, T0, h, G):
     
     # Initialisation
     
@@ -85,7 +92,7 @@ def calculTemperaturesEuler(tspan, T0, h):
     
     # Méthode d'Euler
     for i in range(n-1):
-        dT = odefunction(t[i], T[:, i])
+        dT = odefunction(t[i], T[:, i], G)
         T[:, i+1] = T[: , i] + h * dT
     
     return [t, T]
@@ -94,12 +101,14 @@ def calculTemperaturesEuler(tspan, T0, h):
 
 # Données   
 T0 = np.array([15, 15, 15, 15, 15]) #T0 en °C
+heure, flux_chaleur = pg.PerteEtGain()
+t, G = pg.interpG(heure, flux_chaleur)
 h = 0.01
 t0 = 0 
 tf = 24
 tspan = [t0, tf]
 
-Euler = calculTemperaturesEuler(tspan, T0, h)
+Euler = calculTemperaturesEuler(tspan, T0, h, G)
 
 plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
@@ -112,18 +121,18 @@ plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45")
 # Question 3 ##########################################################################################################
 
 # Définition de la fonction
-def calculTemperaturesIVP(tspan, T0, rtol):
+def calculTemperaturesIVP(tspan, T0, rtol, G):
     
     def system(t, T):
-        return odefunction(t, T)
+        return odefunction(t, T, G)
     
     solution = ode45(system, tspan, T0, method='RK45', rtol=rtol)
     return [solution.t, solution.y]
 
 # Résolution numérique
-tspan = [t0, tf]
+tspan = [t[0], t[-1]]
 rtol = 1e-10
-IVP = calculTemperaturesIVP(tspan, T0, rtol)
+IVP = calculTemperaturesIVP(tspan, T0, rtol, G)
 
 for k in range(len(T0)):
     plt.plot(IVP[0], IVP[1][k, :], 'o-', markersize=5, label="RK45")
@@ -140,7 +149,7 @@ def comparaisonEulerIVP(t_ref, T_ref, h_test) :
     
     for h in h_test:
         # Résolution avec Euler
-        t_euler, T_euler = calculTemperaturesEuler(tspan, T0, h)
+        t_euler, T_euler = calculTemperaturesEuler(tspan, T0, h, G)
         
         # Interpolation de la solution référence sur les temps d'Euler
         T_ref_interp_func = interp1d(t_ref, T_ref, axis=1, kind='linear', fill_value="extrapolate")
@@ -176,7 +185,7 @@ def comparaisonEulerIVP(t_ref, T_ref, h_test) :
 
 # Solution de référence IVP avec rtol = 1e-10
 # Ceci va servir de base de comparaison pour Euler
-t_ref, T_ref = calculTemperaturesIVP(tspan, T0, rtol)
+t_ref, T_ref = calculTemperaturesIVP(tspan, T0, rtol, G)
 
 # Valeurs candidates de h
 
@@ -191,7 +200,7 @@ max_jours = 100
 jour = 0
 h = 0.01
 
-def simulation_etat_stationnaire(tspan, T0, h, max_jours) :
+def simulation_etat_stationnaire(tspan, T0, G, h, max_jours) :
     
 
     # Initialisation des tableaux
@@ -213,7 +222,7 @@ def simulation_etat_stationnaire(tspan, T0, h, max_jours) :
     for jour in range(max_jours):
         
         # On résout l'EDO pour un jour
-        Euler = calculTemperaturesEuler(tspan, T0, h)
+        Euler = calculTemperaturesEuler(tspan, T0, h, G)
         t = np.array(Euler[0]) # Temps
         T = np.array(Euler[1]) # Température
         
@@ -256,7 +265,7 @@ def simulation_etat_stationnaire(tspan, T0, h, max_jours) :
             
     return t_f, T_f, jour+1
 
-t_f, T_f, jour = simulation_etat_stationnaire(tspan, T0, h, max_jours)
+t_f, T_f, jour = simulation_etat_stationnaire(tspan, T0, G, h, max_jours)
     
         
 # Visualisation
@@ -289,13 +298,12 @@ for j in range(len(T0)): #On affiche chaque T[:]
     plt.xlabel("Temps (jours)")
     plt.ylabel(f"Température finale de {nom_T[j]} (°C)")
     plt.grid(True)
-    plt.title(f"Évolution de la température de {nom_T[j]}, en fonction des différents scénarios")
     
     # Scnéario 2 ##############################################################
     
-    def scenario2(tspan, T0, h, jour) :
+    def scenario2(tspan, T0, G, h, jour) :
         
-        def odefunction2(t, T):
+        def odefunction2(t, T, G):
             '''T = [  0,  1 , 2,  3,  4, 5]'''
             '''T = [room, t, cc, c1, c2, w]'''
             # Celsius -> Kelvin
@@ -331,7 +339,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             
             return dT
         
-        def calculTemperaturesEuler2(tspan, T0, h):
+        def calculTemperaturesEuler2(tspan, T0, h, G):
             
             # Initialisation
             
@@ -342,12 +350,12 @@ for j in range(len(T0)): #On affiche chaque T[:]
             
             # Méthode d'Euler
             for i in range(n-1):
-                dT = odefunction2(t[i], T[:, i])
+                dT = odefunction2(t[i], T[:, i], G)
                 T[:, i+1] = T[: , i] + h * dT
             
             return [t, T]
         
-        def simulation_scenario2(tspan, T0, h, jour) :
+        def simulation_scenario2(tspan, T0, G, h, jour) :
             
             # Listes pour stocker t et T à chaque jour
             t_f = []  # Liste pour stocker les temps t de chaque jour
@@ -361,7 +369,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             for day in range(jour):
                 
                 # On résout l'EDO pour un jour
-                Euler = calculTemperaturesEuler2(tspan, T0, h)
+                Euler = calculTemperaturesEuler2(tspan, T0, h, G)
                 t = np.array(Euler[0]) # Temps
                 T = np.array(Euler[1]) # Température
                 
@@ -374,12 +382,12 @@ for j in range(len(T0)): #On affiche chaque T[:]
                     
             return t_f, T_f
     
-        t_f, T_f = simulation_scenario2(tspan, T0, h, jour)
+        t_f, T_f = simulation_scenario2(tspan, T0, G, h, jour)
     
         return t_f, T_f
     
     # Simulation
-    t_f, T_f = scenario2(tspan, T0, h, jour)
+    t_f, T_f = scenario2(tspan, T0, G, h, jour)
     
     # Représenation graphique
     t_f2 = np.array(t_f)/(tf-t0)
@@ -389,9 +397,9 @@ for j in range(len(T0)): #On affiche chaque T[:]
     
     # Scnéario 3 ################################################################
     
-    def scenario2(tspan, T0, h, jour) :
+    def scenario2(tspan, T0, G, h, jour) :
         
-        def odefunction3(t, T):
+        def odefunction3(t, T, G):
             '''T = [  0,  1 , 2,  3,  4, 5]'''
             '''T = [room, t, cc, c1, c2, w]'''
             # Celsius -> Kelvin
@@ -425,7 +433,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             
             return dT
         
-        def calculTemperaturesEuler3(tspan, T0, h):
+        def calculTemperaturesEuler3(tspan, T0, h, G):
             
             # Initialisation
             
@@ -436,12 +444,12 @@ for j in range(len(T0)): #On affiche chaque T[:]
             
             # Méthode d'Euler
             for i in range(n-1):
-                dT = odefunction3(t[i], T[:, i])
+                dT = odefunction3(t[i], T[:, i], G)
                 T[:, i+1] = T[: , i] + h * dT
             
             return [t, T]
         
-        def simulation_scenario3(tspan, T0, h, jour) :
+        def simulation_scenario3(tspan, T0, G, h, jour) :
             
             # Listes pour stocker t et T à chaque jour
             t_f = []  # Liste pour stocker les temps t de chaque jour
@@ -455,7 +463,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             for day in range(jour):
                 
                 # On résout l'EDO pour un jour
-                Euler = calculTemperaturesEuler3(tspan, T0, h)
+                Euler = calculTemperaturesEuler3(tspan, T0, h, G)
                 t = np.array(Euler[0]) # Temps
                 T = np.array(Euler[1]) # Température
                 
@@ -468,12 +476,12 @@ for j in range(len(T0)): #On affiche chaque T[:]
                     
             return t_f, T_f
     
-        t_f, T_f = simulation_scenario3(tspan, T0, h, jour)
+        t_f, T_f = simulation_scenario3(tspan, T0, G, h, jour)
     
         return t_f, T_f
     
     # Simulation
-    t_f, T_f = scenario2(tspan, T0, h, jour)
+    t_f, T_f = scenario2(tspan, T0, G, h, jour)
     
     # Représenation graphique
     t_f3 = np.array(t_f)/(tf-t0)
@@ -486,7 +494,6 @@ for j in range(len(T0)): #On affiche chaque T[:]
     
     
     
-
 
 
 

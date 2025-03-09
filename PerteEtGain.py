@@ -35,17 +35,17 @@ def interpG(heure, flux_chaleur):
     avoir une pseudo-continuité entre le 
     début et la fin de heure'''
     t = np.linspace(heure[0], heure[-1], 400) #[-1] indexation négative : permet de pointer le dernier élément sans connaître la taille de la liste
-    G = CubicSpline(heure, flux_chaleur, bc_type='clamped')
-    return t, G
+    g = CubicSpline(heure, flux_chaleur, bc_type='clamped')
+    return t, g
 
 # QUESTION 3 ################################################################################################################
 
 # On appelle interpG pour stocker les valeurs dans t et G
-t, G = interpG(heure, flux_chaleur)
+t, g = interpG(heure, flux_chaleur)
 
 plt.figure(figsize=(13, 9))  # Définit une taille pour éviter les problèmes d'affichage
 plt.plot(heure, flux_chaleur, 'o', label = "Données initiales" )
-plt.plot(t, G(t), label = "Interpolation par spline cublique"  )
+plt.plot(t, g(t), label = "Interpolation par spline cublique"  )
 plt.title("Évolution du flux de chaleur, G(t), en fonction du moment de la journée")
 plt.grid(True)
 plt.xlabel("Heure (h)")
@@ -53,4 +53,5 @@ plt.ylabel("Flux de chaleur (W/m²)")
 plt.legend()
 plt.show()
 
-
+def G(t):
+    return g(t)
