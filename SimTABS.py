@@ -23,10 +23,10 @@ R = Résistance thermique (m²K/W)
 
 Encodage des constantes
 
-C =          [ 0,  1,  2,  3,    4 ]
-C =          [cc, c1, c2, room,  w]'''  
-C = np.array([50, 50, 10,  12  , 30])
-C = C*1000 # kJ/m²K -> J/m²K
+C =          [ 0,    1,     2,      3,    4 ]
+C =          [cc,   c1,    c2,    room,   w]'''  
+C = np.array([50.0, 50.0, 10.0,  12.0  , 30.0])
+C = C*1000.00 # kJ/m²K -> J/m²K
 ''' 
 R =         [  0,    1    , 2,      3,     4,    5]
 R =         [cc-c1,  x,   c2-cc,   r-s,  s-c2,   w]'''
@@ -38,6 +38,9 @@ nom_T = ["la pièce, T_room", "l'eau dans les tubes, T_t", "la partie centrale d
 
 def odefunction(t, T):
     
+    # Convertir T en float64 pour éviter les problèmes de type
+    T = T.astype(np.float64)
+    
     '''T = [  0,  1 , 2,  3,  4, 5]'''
     '''T = [room, t, cc, c1, c2, w]'''
     # Celsius -> Kelvin
@@ -45,15 +48,15 @@ def odefunction(t, T):
     
     '''Valeur de T_w'''
     if t <= 4 :
-        T_w = 18 + 273.15
+        T_w = 18.0 + 273.15
     else :
-        T_w = 0
+        T_w = 0.0
         
     # On place T_W en T[5]
-    T = np.concatenate((T, T_w), axis=None)
+    T = np.concatenate((T, np.array([T_w],dtype=np.float64)), axis=None)
     
     # Résolution du système ED
-    dT = np.zeros(5)
+    dT = np.zeros(5, dtype=np.float64)
     dT[0] = (-(T[0]-T[4]) / (R[3]+R[4]) + G(t)) / C[3] #(4)
     
     # Dernier terme annulé quand sys à l'arrêt
@@ -67,7 +70,7 @@ def odefunction(t, T):
     dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2] #(3)
     
     # seconde -> heure
-    dT *= 3600
+    dT *= 3600.0
     
     return dT
 
@@ -80,7 +83,7 @@ def calculTemperaturesEuler(tspan, T0, h):
     
     t = np.arange(tspan[0], tspan[-1] + h, h)
     n = len(t)
-    T = np.zeros((5, n))
+    T = np.zeros((5, n), dtype=np.float64)
     T[:, 0] = T0
     
     # Méthode d'Euler
@@ -93,10 +96,10 @@ def calculTemperaturesEuler(tspan, T0, h):
 # Résolution numérique
 
 # Données   
-T0 = np.array([15, 15, 15, 15, 15]) #T0 en °C
+T0 = np.array([15.0, 15.0, 15.0, 15.0, 15.0]) #T0 en °C
 h = 0.01
-t0 = 0 
-tf = 24
+t0 = 0.0
+tf = 24.0
 tspan = [t0, tf]
 
 Euler = calculTemperaturesEuler(tspan, T0, h)
@@ -114,10 +117,8 @@ plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45")
 # Définition de la fonction
 def calculTemperaturesIVP(tspan, T0, rtol):
     
-    def system(t, T):
-        return odefunction(t, T)
     
-    solution = ode45(system, tspan, T0, method='RK45', rtol=rtol)
+    solution = ode45(lambda t, T: odefunction(t, T), tspan, T0, method='RK45', rtol=rtol)
     return [solution.t, solution.y]
 
 # Résolution numérique
@@ -322,7 +323,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             else : 
                 dT[1] = (-(T[1] - T[2])/R[1]) / C[4]
     
-            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] - (T[4]-T[2])/R[2])/C[0]           
+            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0]           
             dT[3] = (-(T[3]-T[2])/R[0]) / C[1]
             dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2]
             
@@ -389,7 +390,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     
     # Scnéario 3 ################################################################
     
-    def scenario2(tspan, T0, h, jour) :
+    def scenario3(tspan, T0, h, jour) :
         
         def odefunction3(t, T):
             '''T = [  0,  1 , 2,  3,  4, 5]'''
@@ -416,7 +417,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             else : 
                 dT[1] = (-(T[1] - T[2])/R[1]) / C[4]
     
-            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] - (T[4]-T[2])/R[2])/C[0]           
+            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0]           
             dT[3] = (-(T[3]-T[2])/R[0]) / C[1]
             dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2]
             
@@ -473,7 +474,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
         return t_f, T_f
     
     # Simulation
-    t_f, T_f = scenario2(tspan, T0, h, jour)
+    t_f, T_f = scenario3(tspan, T0, h, jour)
     
     # Représenation graphique
     t_f3 = np.array(t_f)/(tf-t0)

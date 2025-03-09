@@ -69,7 +69,7 @@ def odefunction(t, T, G):
     else : 
         dT[1] = (-(T[1] - T[2])/R[1]) / C[4] #(5)
 
-    dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] - (T[4]-T[2])/R[2])/C[0] #(1)        
+    dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0] #(1)        
     dT[3] = (-(T[3]-T[2])/R[0]) / C[1] #(2)
     dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2] #(3)
     
@@ -330,7 +330,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             else : 
                 dT[1] = (-(T[1] - T[2])/R[1]) / C[4]
     
-            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] - (T[4]-T[2])/R[2])/C[0]           
+            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0]           
             dT[3] = (-(T[3]-T[2])/R[0]) / C[1]
             dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2]
             
@@ -397,7 +397,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     
     # Scnéario 3 ################################################################
     
-    def scenario2(tspan, T0, G, h, jour) :
+    def scenario3(tspan, T0, G, h, jour) :
         
         def odefunction3(t, T, G):
             '''T = [  0,  1 , 2,  3,  4, 5]'''
@@ -424,7 +424,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
             else : 
                 dT[1] = (-(T[1] - T[2])/R[1]) / C[4]
     
-            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] - (T[4]-T[2])/R[2])/C[0]           
+            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0]           
             dT[3] = (-(T[3]-T[2])/R[0]) / C[1]
             dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2]
             
@@ -481,7 +481,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
         return t_f, T_f
     
     # Simulation
-    t_f, T_f = scenario2(tspan, T0, G, h, jour)
+    t_f, T_f = scenario3(tspan, T0, G, h, jour)
     
     # Représenation graphique
     t_f3 = np.array(t_f)/(tf-t0)

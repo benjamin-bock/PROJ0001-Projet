@@ -13,8 +13,8 @@ def bissection(f,x0,x1,tol):
         return [x1,statut]
     
     if(fx0*fx1<0): # => Deux valeurs de signe opposé => hyp. verifiée
-        k = 0
-        k_max = np.log2(np.abs(x1-x0)/(2*tol))
+        iter = 0
+        iter_max = np.log2(np.abs(x1-x0)/(2*tol))
         
         while (np.abs(x1-x0) > tol): #Tant que l'intervalle est + grand que tol
             x2 = (x0+x1)/2
@@ -22,7 +22,7 @@ def bissection(f,x0,x1,tol):
             
             if (np.abs(fx2)<=tol):
                 statut = 0
-                print(k)
+                print(iter)
                 return [x2,statut]
             
             if (fx2*fx0>0):
@@ -32,25 +32,25 @@ def bissection(f,x0,x1,tol):
             else:
                 x1 = x2
                 fx1 = fx2
-            k += 1
+            iter += 1
         
-            if(k >= k_max):
+            if(iter >= iter_max):
                 statut = -1
                 print("Erreur, la bissection ne converge pas vers une racine.")
                 print("Veuillez entrer des autres valeurs qui définissent un intervalle différent de celui des précédentes valeurs.")
                 print("Ou il est possible que la fonction n'est pas continue dans cette intervalle.")
-                print(k)
+                print(iter)
                 return [1,statut]
         
         statut = 0
-        print(k)
+        print(iter)
         return [x0,statut]
         
     else:
         statut = 1
         print("Erreur, la fonction ne change pas de signe dans cette intervalle-là.")
         print("Dans le cas où vous avez essayer plusieurs valeurs, il est possible que la fonction possède une racine multiple.")
-        print(k)
+        print(iter)
         return [1,statut]
 
 ###############################################################################################################################################################################
