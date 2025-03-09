@@ -78,18 +78,13 @@ def odefunction(t, T):
 
 # Définition de la fonction
 def calculTemperaturesEuler(tspan, T0, h):
-    
-    # Initialisation
-    
-    t = np.arange(tspan[0], tspan[-1] + h, h)
-    n = len(t)
-    T = np.zeros((5, n), dtype=np.float64)
+    t = np.linspace(tspan[0], tspan[-1], int((tspan[-1]-tspan[0])/h +1))
+    T = np.zeros((5, len(t)), dtype=np.float64)  # Correction ici
     T[:, 0] = T0
     
-    # Méthode d'Euler
-    for i in range(n-1):
-        dT = odefunction(t[i], T[:, i])
-        T[:, i+1] = T[: , i] + h * dT
+    for i in range(1, len(t)):
+        dT = odefunction(t[i-1], T[:, i-1])  # Utilisation correcte des indices
+        T[:, i] = T[:, i-1] + h * dT  # Utilisation correcte des indices
     
     return [t, T]
  
