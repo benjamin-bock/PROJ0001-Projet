@@ -118,7 +118,7 @@ def calculTemperaturesIVP(tspan, T0, rtol):
 
 # Résolution numérique
 tspan = [t0, tf]
-rtol = 1e-10
+rtol = 1e-15
 IVP = calculTemperaturesIVP(tspan, T0, rtol)
 
 for k in range(len(T0)):
