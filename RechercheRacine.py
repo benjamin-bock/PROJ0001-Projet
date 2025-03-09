@@ -1,57 +1,35 @@
 import numpy as np
 
 def bissection(f,x0,x1,tol):
-    
-    fx0 = f(x0)
-    fx1 = f(x1)
-    
-    if(np.abs(fx0)<=tol): # si x0 est déja une racine
-        statut = 0
-        return [x0,statut]
-    if(np.abs(fx1)<=tol): # si x1 est déja une racine
-        statut = 0
-        return [x1,statut]
-    
-    if(fx0*fx1<0): # => Deux valeurs de signe opposé => hyp. verifiée
-        iter = 0
-        iter_max = np.log2(np.abs(x1-x0)/(2*tol))
-        
-        while (np.abs(x1-x0) > tol): #Tant que l'intervalle est + grand que tol
-            x2 = (x0+x1)/2
-            fx2 = f(x2)
-            
-            if (np.abs(fx2)<=tol):
-                statut = 0
-                print(iter)
-                return [x2,statut]
-            
-            if (fx2*fx0>0):
-                x0 = x2
-                fx0 = fx2
-            
-            else:
-                x1 = x2
-                fx1 = fx2
-            iter += 1
-        
-            if(iter >= iter_max):
-                statut = -1
-                print("Erreur, la bissection ne converge pas vers une racine.")
-                print("Veuillez entrer des autres valeurs qui définissent un intervalle différent de celui des précédentes valeurs.")
-                print("Ou il est possible que la fonction n'est pas continue dans cette intervalle.")
-                print(iter)
-                return [1,statut]
-        
-        statut = 0
-        print(iter)
-        return [x0,statut]
-        
-    else:
-        statut = 1
-        print("Erreur, la fonction ne change pas de signe dans cette intervalle-là.")
-        print("Dans le cas où vous avez essayer plusieurs valeurs, il est possible que la fonction possède une racine multiple.")
-        print(iter)
-        return [1,statut]
+    f0 = f(x0)
+    f1 = f(x1)
+    i = 0
+    x = 0
+
+    if f0f1 > 0 : 
+        print("Erreur, l'hypothèse n'est pas vérifiée, f(x0) et f(x1) ont le même signe")
+        return [0, 1]
+
+    if f0f1 == 0 : 
+        return [x0, 0] if f0 == 0 else [x1,0]
+ 
+    while abs(x1-x0) > tol :
+        x = (x0 + x1)/2
+        fx = f(x)
+
+        if fxf0 > 0:
+                x0 = x
+                f0 = fx
+        else :
+                x1 = x
+        i += 1
+        if i > 50:
+            break
+    if np.log2((abs(x1-x0))/2 tol) > i : 
+        print("La fonction diverge")
+        return [0, -1]
+
+    return [x, 0]
 
 ###############################################################################################################################################################################
 
