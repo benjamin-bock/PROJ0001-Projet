@@ -1,101 +1,94 @@
+import numpy as np
 
-def bissection(f, x0, x1, tol):
+def bissection(f,x0,x1,tol):
     
-    # Vérifier les hypothèses de la méthode de la bissection
-    f_x0 = f(x0)
-    f_x1 = f(x1)
-    if f_x0 * f_x1 >= 0.0:
-        print("Erreur : f(x0) et f(x1) doivent avoir des signes opposés.")
-        return [None, 1]  # statut = 1 -> hypothèses non satisfaites
-
-    a, b = x0, x1
-    f_a = f_x0
-    iteration = 0
-    max_iter = 1000000  # Nb max d'itérations pour éviter une boucle infinie
-
-    while abs((b - a) / 2.0) >= tol:
-        
-        # Éviter une boucle infinie
-        iteration += 1
-        if iteration > max_iter:
-            print("Erreur : La méthode de bissection n'a pas convergé.")
-            return [None, -1]  # statut = -1 -> non-convergence
-
-        x = (a + b) / 2.0  # Milieu d'intervalle
-        f_x = f(x)  # Évaluer f(x) une seule fois
-
-        if f_x == 0.0:  # Solution exacte trouvée
-            return [x, 0]
-
-        # Mettre à jour l'intervalle
-        elif f_x * f_a < 0:
-            b = x
-        else:
-            a = x
-            f_a = f_x  # Réutiliser f_x pour la prochaine itération
-
-    return [(a + b) / 2.0, 0]  # statut = 0 -> convergence réussie
-
-################################################################################################################################################################################################################################
-
-def secante(f, x0, x1, tol):
+    fx0 = f(x0)
+    fx1 = f(x1)
     
-    # Vérifier les hypothèses de la méthode de la bissection
-    f_x0 = f(x0)
-    f_x1 = f(x1)
-    if f_x0 * f_x1 >= 0.0:
-        print("Erreur : f(x0) et f(x1) doivent avoir des signes opposés.")
-        return [None, 1]  # statut = 1 -> hypothèses non satisfaites
-
-    iteration = 0
-    max_iter = 100000  # Nb max d'itérations pour éviter une boucle infinie
-    f_x2 = 100 # On initialise un grand nombre pour ne pas sortir de la boucle
+    if(np.abs(fx0)<=tol): # si x0 est déja une racine
+        statut = 0
+        return [x0,statut]
+    if(np.abs(fx1)<=tol): # si x1 est déja une racine
+        statut = 0
+        return [x1,statut]
     
-    while iteration < max_iter :
-              
-        iteration += 1 
+    if(fx0*fx1<0): # => Deux valeurs de signe opposé => hyp. verifiée
+        k = 0
+        k_max = np.log2(np.abs(x1-x0)/(2*tol))
         
-        # Éviter la division par zéro
-        if f_x1 - f_x0 == 0.0 :
-            print("Erreur : Division par zéro")
-            return [None, 1] # statut = 1 -> Processus interrompu
-
-        # Calculer la nouvelle itérée
-        x2 = x1 - f_x1 * (x1 - x0) / (f_x1 - f_x0)
-
-        # On appelle une seule fois f
-        f_x2 = f(x2)
-        
-        # Critère d'arrêt
-        if abs(f_x2) < tol :
-            print("La méthode a convergé")
-            return [x2, 0]
-        
-        # Mise à jour des paramètres
-        
-        # y devient x0
-        if f_x1 * f_x2 < 0.0 :
-            x0 = x1
-            f_x0 = f_x1
+        while (np.abs(x1-x0) > tol): #Tant que l'intervalle est + grand que tol
+            x2 = (x0+x1)/2
+            fx2 = f(x2)
             
-        # x2 devient x1
+            if (np.abs(fx2)<=tol):
+                statut = 0
+                print(k)
+                return [x2,statut]
+            
+            if (fx2*fx0>0):
+                x0 = x2
+                fx0 = fx2
+            
+            else:
+                x1 = x2
+                fx1 = fx2
+            k += 1
         
+            if(k >= k_max):
+                statut = -1
+                print("Erreur, la bissection ne converge pas vers une racine.")
+                print("Veuillez entrer des autres valeurs qui définissent un intervalle différent de celui des précédentes valeurs.")
+                print("Ou il est possible que la fonction n'est pas continue dans cette intervalle.")
+                print(k)
+                return [1,statut]
+        
+        statut = 0
+        print(k)
+        return [x0,statut]
+        
+    else:
+        statut = 1
+        print("Erreur, la fonction ne change pas de signe dans cette intervalle-là.")
+        print("Dans le cas où vous avez essayer plusieurs valeurs, il est possible que la fonction possède une racine multiple.")
+        print(k)
+        return [1,statut]
+
+###############################################################################################################################################################################
+
+def secante(f,x0,x1,tol):
+    
+    statut = 0
+    k = 0
+    k_max = np.log2(np.abs(x1-x0)/(2*tol))
+    fx0 = f(x0)
+    fx1 = f(x1)
+    
+    if(np.abs(fx0-fx1)<=tol):
+        statut = 1
+        print("Erreur, les valeurs introduites partagent la même ordonnée.")
+        return [1,statut]
+    
+    if(np.abs(fx0)<=tol):
+        return [x0,statut]
+    
+    if(np.abs(fx1)<=tol):
+        return [x1,statut]
+    
+    while (np.abs(fx1) > tol):
+        x2 = x1 - fx1*(x1-x0)/(fx1-fx0)
+        a = x1
         x1 = x2
-        f_x1 = f_x2
+        x0 = a
+        fx0 = fx1
+        fx1 = f(x1)
         
-
-    print("Erreur : La méthode n'a pas convergé")
-    return [None, -1] # statut = -1 -> non-convergence
-            
-            
-
-
-
-
-
-
-
-
+        k += 1 
+        if(k >= k_max):
+           statut = -1
+           print("Elle ne converge pas vers une racine")
+           return [-1,statut]
+      
+    return [x1,statut]
 
 
 
