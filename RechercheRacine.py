@@ -6,30 +6,29 @@ def bissection(f,x0,x1,tol):
     i = 0
     x = 0
 
-    if f0f1 > 0 : 
+    if f0*f1 > 0 : 
         print("Erreur, l'hypothèse n'est pas vérifiée, f(x0) et f(x1) ont le même signe")
-        statut = 1
-        return [0, statut]
+        return [0, 1]   
 
-    if f0f1 == 0 : 
+    if f0*f1 == 0 : 
         return [x0, 0] if f0 == 0 else [x1,0]
  
     while abs(x1-x0) > tol :
         x = (x0 + x1)/2
         fx = f(x)
 
-        if fxf0 > 0:
+        if fx*f0 > 0:
                 x0 = x
                 f0 = fx
-        else :
+        else :          
                 x1 = x
         i += 1
         if i > 50:
             break
-    if np.log2((abs(x1-x0))/2 tol) > i : 
+    if np.log2((abs(x1-x0))/2 * tol) > i : 
         print("La fonction diverge")
         return [0, -1]
-
+        
     return [x, 0]
 
 ###############################################################################################################################################################################
