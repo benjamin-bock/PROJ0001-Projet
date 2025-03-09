@@ -71,35 +71,33 @@ def secante(f, x0, x1, tol):
     return [x, statut]
 
 
-def bissection(f, x0, x1, tol):
-   
-    f_x0 = f(x0)
-    f_x1 = f(x1)
-    if abs(f_x0) < tol:
-        return x0, 0  # a est proche d'une racine
-    elif abs(f_x1) < tol:
-        return x1, 0  # b est proche d'une racine
-    elif f_x0 * f_x1 > 0:
-        print('Selon le TVI, il n y a pas de racines entre ces 2 valeurs')
-        return np.nan, 1
-    else:
-        d = abs(x1 - x0)
-        iterations = 0  # Compte les itérations
-        max_iterations = np.log2(np.abs((x1 - x0)) / (2 * tol)) # limite sinon boucles infinies
+ def bissection(f,x0,x1,tol):
+    f0 = f(x0)
+    f1 = f(x1)
+    i = 0
+    x = 0
 
-        while d > tol and iterations < max_iterations and f_x0 * f_x1 != 0:
-            m = (x0 + x1) / 2
-            f_m = f(m)
-            if f_m == 0:
-                return [m, 0]  # La racine a été trouvée
-            elif f_x0 * f_m > 0:
-                x0 = m
-            else:
-                x1 = m
-            d = abs(x1 - x0)
-            iterations += 1
+    if f0*f1 > 0 : 
+        print("Erreur, l'hypothèse n'est pas vérifiée, f(x0) et f(x1) ont le même signe")
+        return [0, 1]   
 
-        if iterations == max_iterations:
-            return [m, 1]  # La méthode n'a pas convergé dans le nombre maximum d'itérations
-        else:
-            return [m, 0]  # La méthode a convergé dans la tolérance demandée
+    if f0*f1 == 0 : 
+        return [x0, 0] if f0 == 0 else [x1,0]
+ 
+    while abs(x1-x0) > tol :
+        x = (x0 + x1)/2
+        fx = f(x)
+
+        if fx*f0 > 0:
+                x0 = x
+                f0 = fx
+        else :          
+                x1 = x
+        i += 1
+        if i > 50:
+            break
+    if np.log2((abs(x1-x0))/2 * tol) > i : 
+        print("La fonction diverge")
+        return [0, -1]
+        
+    return [x, 0]
