@@ -8,7 +8,8 @@ def bissection(f,x0,x1,tol):
 
     if f0f1 > 0 : 
         print("Erreur, l'hypothèse n'est pas vérifiée, f(x0) et f(x1) ont le même signe")
-        return [0, 1]
+        statut = 1
+        return [0, statut]
 
     if f0f1 == 0 : 
         return [x0, 0] if f0 == 0 else [x1,0]
