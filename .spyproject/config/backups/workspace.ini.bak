@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['SimTABS.py', 'PerteEtGain.py', 'RechercheRacine.py', '..\\Milestone1\\milestone1.py', 'PerteEtGain.txt', 'constante.py', 'question_1.py', 'formule.py']
+recent_files = ['SimTABS.py', 'PerteEtGain.py', 'RechercheRacine.py', 'PerteEtGain.txt', 'constante.py', 'formule.py']
 
 [main]
 version = 0.2.0
