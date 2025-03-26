@@ -104,9 +104,9 @@ Euler = calculTemperaturesEuler(tspan, T0, h)
 plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
     plt.plot(Euler[0], Euler[1][k, :], 'o-', markersize=5, label="Euler") # Tracer Euler
-plt.xlabel("Temps (h)")
-plt.ylabel("Température finale de la pièce (°C)")
-plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45")
+plt.xlabel("Temps (h)", fontsize=13)
+plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
+plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45", fontsize=13)
 
 
 # Question 3.3 ##########################################################################################################
@@ -126,7 +126,7 @@ IVP = calculTemperaturesIVP(tspan, T0, rtol)
 for k in range(len(T0)):
     plt.plot(IVP[0], IVP[1][k, :], 'o-', markersize=5, label="RK45")
 plt.grid(True)
-plt.legend()
+plt.legend(loc='upper left', bbox_to_anchor=(80/plt.gcf().dpi, 70/plt.gcf().dpi))
 plt.show()
     
 # Question 3.4 #############################################################################################################
@@ -154,13 +154,14 @@ def comparaisonEulerIVP(t_ref, T_ref, h_test) :
     plt.figure(figsize=(10, 6))
     plt.plot(h_test, errors, 'o-', label="Erreur absolue moyenne")
     
+    
     # Échelle logarithmique pour mieux visualiser la convergence
     plt.xscale('log')  
     plt.yscale('log')
-    plt.xlabel("Pas de temps h (heures)")
-    plt.ylabel("Erreur absolue moyenne (K)")
-    plt.title("Détermination du pas de temps h optimal dans la méthode d'Euler")
-    plt.legend()
+    plt.xlabel("Pas de temps h (heures)", fontsize=13)
+    plt.ylabel("Erreur absolue moyenne (°C)", fontsize=13)
+    plt.title("Détermination du pas de temps h optimal dans la méthode d'Euler", fontsize=13)
+    plt.legend(fontsize=13)
     plt.grid()
     plt.show()
     
@@ -261,13 +262,15 @@ t_f, T_f, jour = simulation_etat_stationnaire(tspan, T0, h, max_jours)
 t_f = np.array(t_f)/(tf-t0)
 T_f = np.array(T_f)
 plt.figure(figsize=(10, 6))
+plt.xticks(np.linspace(t_f[0], t_f[-1], 10))  # Divise la grille en 8 parts verticales égales
+
 plt.plot(t_f, T_f[:, 0], 'o-', markersize=5, label="T_room") # Tracer 
 plt.plot(t_f, T_f[:, 4], 'o-', markersize=5, label="T_c2") # Tracer T_c2
-plt.xlabel("Temps (jours)")
-plt.ylabel("Température finale de la pièce (°C)")
-plt.title("Convergence vers l'état stationnaire")
+plt.xlabel("Temps (jours)", fontsize=13)
+plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
+plt.title("Convergence vers l'état stationnaire", fontsize=13)
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=13)
 plt.show()
     
 # Question 3.6 #########################################################################################################
@@ -281,13 +284,13 @@ T_f1 = T_f
 for j in range(len(T0)): #On affiche chaque T[:]
     
     # Scénario 1 (voir question 5) ##############################################
-    
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 8))
+    plt.xticks(np.linspace(t_f1[0], t_f1[-1], 10))  # Divise la grille en 8 parts verticales égales
     plt.plot(t_f1, T_f1[:, j], 'o-', markersize=5, label="Scénario 1")
-    plt.xlabel("Temps (jours)")
-    plt.ylabel(f"Température finale de {nom_T[j]} (°C)")
+    plt.xlabel("Temps (jours)",fontsize=13)
+    plt.ylabel(f"Température finale de {nom_T[j]} (°C)",fontsize=13)
     plt.grid(True)
-    plt.title(f"Évolution de la température de {nom_T[j]}, en fonction des différents scénarios")
+    plt.title(f"Évolution de la température de {nom_T[j]}, en fonction des différents scénarios", fontsize=13)
     
     # Scnéario 2 ##############################################################
     
@@ -479,7 +482,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     plt.plot(t_f3, T_f3[:, j], 'o-',  markersize=5, label="Scénario 3")
     
     # On affiche les graphes
-    plt.legend()
+    plt.legend(loc='upper left', fontsize=13)
     plt.show()
 
 
@@ -582,11 +585,11 @@ plt.xticks(np.linspace(t_4[0], t_4[-1], 9))  # Divise la grille en 8 parts verti
 plt.plot(t_4, T_confort, 'o-', markersize=3, label="Température de confort")
 plt.plot(t_max_plot, T_max,'ro', markersize=8)
 plt.axhline(y=T_max, color='r', linestyle='--', label=f"T_max = {T_max:.2f}°C")
-plt.xlabel("Temps (heures)")
-plt.ylabel("Température de confort (°C)")
-plt.title(f"Évolution de la température de confort pour ∆t = {delta_t}")
+plt.xlabel("Temps (heures)", fontsize=13)
+plt.ylabel("Température de confort (°C)", fontsize=13)
+plt.title(f"Évolution de la température de confort pour ∆t = {delta_t}", fontsize=13)
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=13)
 plt.show()
 
 
@@ -631,11 +634,11 @@ plt.plot(t_4, T_confort, 'o-', markersize=3, label="Température de confort")
 plt.plot(t_max_plot, T_max_final, 'ro', markersize=8, label="T_max atteint")
 plt.axhline(y=T_max_d, color='g', linestyle='--', label=f"T_max désirée = {T_max_d}°C")
 plt.axhline(y=T_max_final, color='r', linestyle='--', label=f"T_max atteinte = {T_max_final:.2f}°C")
-plt.xlabel("Temps (heures)")
-plt.ylabel("Température de confort (°C)")
-plt.title(f"Évolution de la température de confort pour ∆t optimal = {delta_t_optimal:.2f} heures")
+plt.xlabel("Temps (heures)", fontsize=13)
+plt.ylabel("Température de confort (°C)", fontsize=13)
+plt.title(f"Évolution de la température de confort pour ∆t optimal = {delta_t_optimal:.2f} heures", fontsize=13)
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=13)
 plt.show()   
 
 # QUESTION 4.3 ##############################################################################################################
@@ -765,17 +768,17 @@ plt.figure(figsize=(12, 6))
 plt.plot(t_stat, T_confort, 'b-', label='Température de confort')
 plt.axhline(y=T_max_d, color='g', linestyle='--', label=f'T_max désirée = {T_max_d}°C')
 plt.axhline(y=T_confort[-1], color='r', linestyle='--', label=f'T_max atteinte = {T_confort[-1]:.2f}°C')
-plt.xlabel("Temps (jours)")
-plt.ylabel("Température de confort (°C)")
-plt.title(f"Évolution de la température de confort à l'état stationnaire (∆t = {delta_t_optimal:.2f}h)")
+plt.xlabel("Temps (jours)", fontsize=13)
+plt.ylabel("Température de confort (°C)", fontsize=13)
+plt.title(f"Évolution de la température de confort à l'état stationnaire (∆t = {delta_t_optimal:.2f}h)", fontsize=13)
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=13)
 plt.show()
 
 
 
 # Simulation sur plusieurs jours
-nb_jours = 5  # On simule sur 5 jours pour voir la stabilisation
+nb_jours = jour_stat  # On simule sur 5 jours pour voir la stabilisation
 t_complet, T_complet = simulation_complete(tspan, T0, h, delta_t_optimal, nb_jours)
 
 # Calcul de la température de confort pour tous les points
@@ -809,25 +812,26 @@ plt.figure(figsize=(12, 6))
 plt.plot(t_complet/24, T_confort, 'b-', label='Température de confort')
 plt.axhline(y=24, color='r', linestyle='--', label='Limite supérieure (24°C)')
 plt.axhline(y=19.5, color='g', linestyle='--', label='Limite inférieure (19.5°C)')
-plt.xlabel("Temps (jours)")
-plt.ylabel("Température de confort (°C)")
-plt.title(f"Évolution de la température de confort sur {nb_jours} jours (∆t = {delta_t_optimal:.2f}h)")
+plt.xlabel("Temps (jours)", fontsize=13)
+plt.ylabel("Température de confort (°C)", fontsize=13)
+plt.title(f"Évolution de la température de confort sur {nb_jours} jours (∆t = {delta_t_optimal:.2f}h)", fontsize=13)
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=13)
 plt.show()
 
 # Graphique détaillé du dernier jour
 plt.figure(figsize=(12, 6))
 plt.plot(t_dernier, T_confort_dernier, 'b-', label='Température de confort')
+plt.xticks(np.linspace(t_4[0], t_4[-1], 9))  # Divise la grille en 8 parts verticales égales
 plt.axhline(y=24, color='r', linestyle='--', label='Limite supérieure (24°C)')
 plt.axhline(y=19.5, color='g', linestyle='--', label='Limite inférieure (19.5°C)')
 plt.axvline(x=8, color='gray', linestyle=':', label='Période 8h-19h')
 plt.axvline(x=19, color='gray', linestyle=':')
-plt.xlabel("Heure de la journée")
-plt.ylabel("Température de confort (°C)")
-plt.title("Température de confort - Dernier jour")
+plt.xlabel("Heure de la journée", fontsize=13)
+plt.ylabel("Température de confort (°C)", fontsize=13)
+plt.title("Température de confort - Dernier jour", fontsize=13)
 plt.grid(True)
-plt.legend()
+plt.legend(loc='lower right', fontsize=13)
 plt.show()
 
 
