@@ -1,4 +1,5 @@
 import numpy as np
+
 def bissection(f,x0,x1,tol):
 
     fx0 = f(x0)
@@ -55,8 +56,7 @@ def bissection(f,x0,x1,tol):
 def secante(f,x0,x1,tol):
 
     statut = 0
-    k = 0
-    k_max = np.log2(np.abs(x1-x0)/(2*tol))
+    k_max = int(np.log2(np.abs(x1-x0)/(2*tol)))
     fx0 = f(x0)
     fx1 = f(x1)
 
@@ -71,21 +71,23 @@ def secante(f,x0,x1,tol):
     if(np.abs(fx1)<=tol):
         return [x1,statut]
 
-    while (np.abs(fx1) > tol):
-        x2 = x1 - fx1*(x1-x0)/(fx1-fx0)
-        a = x1
-        x1 = x2
-        x0 = a
-        fx0 = fx1
-        fx1 = f(x1)
-
-        k += 1 
-        if(k >= k_max):
-           statut = -1
-           print("Elle ne converge pas vers une racine")
-           return [-1,statut]
-
-    return [x1,statut]
+    for i in range(k_max):  # Maximum 50 itérations
+        if abs(fx1 - fx0) < 1e-10:  # Éviter division par zéro
+            break
+            
+        x2 = x1 - fx1 * (x1 - x0)/(fx1 - fx0)
+        
+        if abs(x2 - x1) < tol:  # Convergence atteinte
+            return [x2,statut]
+            
+        x0, x1 = x1, x2
+        fx0, fx1 = fx1, f(x2)
+    else:
+        # Si on sort de la boucle sans break, on utilise la bissection
+        print("La méthode de la sécante n'a pas convergé, utilisation de la bissection")
+        statut = 1
+        return [x1,statut]
+    
 
 
 

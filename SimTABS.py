@@ -3,6 +3,8 @@ from PerteEtGain import G
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
 from scipy.interpolate import interp1d
+from RechercheRacine import secante
+from RechercheRacine import bissection
 
 
 '''Signification des constantes
@@ -34,7 +36,7 @@ R = np.array([0.05, 0.025 , 0.02  , 0.1, 0.183, 0.15])
 
 nom_T = ["la pièce, T_room", "l'eau dans les tubes, T_t", "la partie centrale du béton, T_cc", "la partie supérieure du béton, T_c1", "la partie inférieure du béton, T_c2",] 
 
-# Question 1 ##############################################################################################################
+# Question 3.1 ##############################################################################################################
 
 def odefunction(t, T):
     
@@ -74,7 +76,7 @@ def odefunction(t, T):
     
     return dT
 
-# Question 2 #########################################################################################################
+# Question 3.2 #########################################################################################################
 
 # Définition de la fonction
 def calculTemperaturesEuler(tspan, T0, h):
@@ -107,7 +109,7 @@ plt.ylabel("Température finale de la pièce (°C)")
 plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45")
 
 
-# Question 3 ##########################################################################################################
+# Question 3.3 ##########################################################################################################
 
 # Définition de la fonction
 def calculTemperaturesIVP(tspan, T0, rtol):
@@ -127,7 +129,7 @@ plt.grid(True)
 plt.legend()
 plt.show()
     
-# Question 4 #############################################################################################################
+# Question 3.4 #############################################################################################################
 
 def comparaisonEulerIVP(t_ref, T_ref, h_test) :
     
@@ -180,7 +182,7 @@ h_test = [0.1, 0.05, 0.01, 0.005, 0.001]
 
 comparaisonEulerIVP(t_ref, T_ref, h_test)
 
-# Question 5 #############################################################################################
+# Question 3.5 #############################################################################################
 
 # Initialisation des constantes
 max_jours = 100
@@ -268,7 +270,7 @@ plt.grid(True)
 plt.legend()
 plt.show()
     
-# Question 6 #########################################################################################################
+# Question 3.6 #########################################################################################################
 
 # Stocke les variables
 t_f1 = t_f
@@ -479,13 +481,196 @@ for j in range(len(T0)): #On affiche chaque T[:]
     # On affiche les graphes
     plt.legend()
     plt.show()
+
+
+##################################################################################################################   
+# QUESTION 4 ##############################################################################################################
+##################################################################################################################
+
+# QUESTION 4.1 ##############################################################################################################
+
+def scenario4(tspan, T0, h, delta_t) :
+        
+        
+        def odefunction4(t, T):
+            '''T = [  0,  1 , 2,  3,  4, 5]'''
+            '''T = [room, t, cc, c1, c2, w]'''
+            # Celsius -> Kelvin
+            T = T + 273.15 
+            
+            '''Valeur de T_w'''
+            if t <= 4 :
+                T_w = 18 + 273.15
+            elif 4 < t <= 4 + delta_t :
+                T_w = 28 + 273.15
+            else :
+                T_w = 0
+                
+            # On place T_w en T[5]
+            T = np.concatenate((T, T_w), axis=None)
+            
+            # Résolution du système ED
+            dT = np.zeros(5)
+            dT[0] = (-(T[0]-T[4]) / (R[3]+R[4]) + G(t)) / C[3]
+            
+            # Dernier terme annulé quand sys à l'arrêt
+            if T[5] != 0 :
+                dT[1] = (-(T[1] - T[2])/R[1] - (T[1]-T[5])/R[5]) / C[4]
+            else : 
+                dT[1] = (-(T[1] - T[2])/R[1]) / C[4]
     
+            dT[2] = (-(T[2]-T[3])/R[0] - (T[2]-T[1])/R[1] + (T[4]-T[2])/R[2])/C[0]           
+            dT[3] = (-(T[3]-T[2])/R[0]) / C[1]
+            dT[4] = (-(T[4]-T[2])/R[2] + (T[0]-T[4])/(R[3]+R[4]))/C[2]
+            
+            # seconde -> heure
+            dT = dT*3600
+            
+            return dT
+        
+        # Méthode d'Euler
+        def calculTemperaturesEuler4(tspan, T0, h):
+            
+            # Initialisation
+            
+            t = np.arange(tspan[0], tspan[-1] + h, h)
+            n = len(t)
+            T = np.zeros((5, n))
+            T[:, 0] = T0
+            
+            # Méthode d'Euler
+            for i in range(n-1):
+                dT = odefunction4(t[i], T[:, i])
+                T[:, i+1] = T[: , i] + h * dT
+            
+            return [t, T]
+        
+
+        def simulation_scenario4(tspan, T0, h) :
+                        
+            # On résout l'EDO pour un jour
+            Euler = calculTemperaturesEuler4(tspan, T0, h)
+            t_4 = np.array(Euler[0]) # Temps
+            T_4 = np.array(Euler[1]) # Température
+                    
+            return t_4, T_4
     
+        t_4, T_4 = simulation_scenario4(tspan, T0, h)
     
+        return t_4, T_4
+
+def findTmax(tspan, T0, h, delta_t) :
+    
+    t_4, T_4 = scenario4(tspan, T0, h, delta_t)
+    
+    T_confort = (T_4[0, :] + T_4[4, :])/2  # Moyenne entre T_room (indice 0) et T_c2 (indice 4)
+    T_max = np.max(T_confort)
+    t_max = np.argmax(T_confort)
+    return T_max , t_max , T_confort , t_4, T_4
+
+# Simulation
+delta_t = 1
+T_max, t_max, T_confort, t_4, T_4 = findTmax(tspan, T0, h, delta_t)
+
+# Représentation graphique
+t_4 = np.array(t_4)
+T_confort = np.array(T_confort)
+t_max_plot = (np.float64(t_max))/100
+
+plt.figure(figsize=(10, 6))
+plt.xticks(np.linspace(t_4[0], t_4[-1], 9))  # Divise la grille en 8 parts verticales égales
+plt.plot(t_4, T_confort, 'o-', markersize=3, label="Température de confort")
+plt.plot(t_max_plot, T_max,'ro', markersize=8)
+plt.axhline(y=T_max, color='r', linestyle='--', label=f"T_max = {T_max:.2f}°C")
+plt.xlabel("Temps (heures)")
+plt.ylabel("Température de confort (°C)")
+plt.title(f"Évolution de la température de confort pour ∆t = {delta_t}")
+plt.grid(True)
+plt.legend()
+plt.show()
 
 
+# QUESTION 4.2 ##############################################################################################################
 
+def f(delta_t):
+    """
+    Fonction dont on cherche la racine : f(delta_t) = T_max(delta_t) - T_max_d
+    """
+    if delta_t < 0:  # Protection contre les valeurs négatives
+        return float('inf')
+    T_max, _, _, _, _ = findTmax(tspan, T0, h, delta_t)
+    return T_max - T_max_d
 
+# Test de la fonction
+T_max_d = 24.0  # Température maximale souhaitée
 
+# Points initiaux pour la méthode de la sécante
+delta_t_min = 0.1  # Premier point initial
+delta_t_max = 8.0  # Deuxième point initial
+tol = 1e-2  # Tolérance moins stricte
 
+# Vérification des valeurs initiales
+f_min = f(delta_t_min)
+f_max = f(delta_t_max)
+print(f"f({delta_t_min}) = {f_min:.3f}")
+print(f"f({delta_t_max}) = {f_max:.3f}")
 
+resultat_sec = secante(f, delta_t_min, delta_t_max, tol)
+
+delta_t_optimal = resultat_sec[0]
+
+'''
+# Si les signes sont opposés, on peut utiliser la méthode de la sécante
+if f_min * f_max < 0:
+    try:
+        # Utilisation de la méthode de la sécante avec protection
+        x0, x1 = delta_t_min, delta_t_max
+        fx0, fx1 = f_min, f_max
+        
+        for i in range(50):  # Maximum 50 itérations
+            if abs(fx1 - fx0) < 1e-10:  # Éviter division par zéro
+                break
+                
+            x2 = x1 - fx1 * (x1 - x0)/(fx1 - fx0)
+            
+            if abs(x2 - x1) < tol:  # Convergence atteinte
+                delta_t_optimal = x2
+                break
+                
+            x0, x1 = x1, x2
+            fx0, fx1 = fx1, f(x2)
+        else:
+            # Si on sort de la boucle sans break, on utilise la bissection
+            print("La méthode de la sécante n'a pas convergé, utilisation de la bissection")
+            delta_t_optimal = bissection(f, delta_t_min, delta_t_max, tol)
+    except:
+        print("Erreur dans la méthode de la sécante, utilisation de la bissection")
+        delta_t_optimal = bissection(f, delta_t_min, delta_t_max, tol)
+else:
+    print("Pas de changement de signe, utilisation de la bissection")
+    delta_t_optimal = bissection(f, delta_t_min, delta_t_max, tol)
+'''
+
+print(f"Pour atteindre une température maximale de {T_max_d}°C, il faut un ∆t de {delta_t_optimal:.2f} heures")
+
+# Vérification du résultat
+T_max_final, t_max, T_confort, t_4, T_4 = findTmax(tspan, T0, h, delta_t_optimal)
+print(f"Température maximale atteinte : {T_max_final:.2f}°C")
+
+# Représentation graphique avec le delta_t optimal
+t_4 = np.array(t_4)
+T_confort = np.array(T_confort)
+t_max_plot = (np.float64(t_max))/100
+
+plt.figure(figsize=(12, 6))
+plt.xticks(np.linspace(t_4[0], t_4[-1], 9))  # Divise la grille en 8 parts verticales égales
+plt.plot(t_4, T_confort, 'o-', markersize=3, label="Température de confort")
+plt.plot(t_max_plot, T_max_final, 'ro', markersize=8, label="T_max atteint")
+plt.axhline(y=T_max_d, color='g', linestyle='--', label=f"T_max désirée = {T_max_d}°C")
+plt.axhline(y=T_max_final, color='r', linestyle='--', label=f"T_max atteinte = {T_max_final:.2f}°C")
+plt.xlabel("Temps (heures)")
+plt.ylabel("Température de confort (°C)")
+plt.title(f"Évolution de la température de confort pour ∆t optimal = {delta_t_optimal:.2f} heures")
+plt.grid(True)
+plt.legend()
+plt.show()   
