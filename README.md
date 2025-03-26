@@ -128,3 +128,39 @@ GitHub Desktop est une application graphique qui simplifie l'utilisation de Git.
 Que vous utilisiez le terminal ou GitHub Desktop, Git est un outil puissant pour gérer vos projets de développement. Avec ce guide, vous devriez être en mesure de cloner, mettre à jour, enregistrer et envoyer vos modifications sur GitHub. Bon codage!
 
 Si vous avez des questions ou des problèmes, n'hésitez pas à consulter la [documentation officielle de Git](https://git-scm.com/doc) ou à poser des questions sur les forums de la communauté GitHub.
+
+
+# 📝 **Rapport**
+
+Le Rapport se trouve dans le fichier 
+```bash
+PROJ0001-Projet/Rapport
+```
+Il s'agit d'un document LaTeX fait sur Overleaf. Pour le mettre à jour il faut lier son compte Overleaf à GitHub pour pouvoir ensuite push les modifications sur le repo ci-présent.
+
+## 📦 **Installation**
+
+Pour cloner le Rapport sur Overleaf afin de pouvoir le modifier confortablement il faut :
+
+```bash
+1. Lier son compte Overleaf à GitHub :
+  Account -> Project Synchronisation -> GitHub Sync
+
+2. Créer un nouveau projet:
+  New Project -> Import from GitHub -> benjamin-bock/PROJ0001-Projet
+
+3. Changer le compilateur en XeLaTeX ou LuaLaTeX :
+  Menu -> Settings -> Compiler
+```
+## 🛠️ **Utilisation**
+
+Pour sauvegarder des modifications, tout se fait sur Overleaf :
+
+```bash
+Dans le projet,
+
+Menu -> Sync -> GitHub -> Push Overleaf changes to GitHub
+```
+
+## ⚠️ **Attention**
+N'oubliez pas de pull à chaque fois que vous allez travailler sur le rapport. Cela évite de refaire ce qu'un autre a peut-être déjà fait et cela évite les collisions. La marche à suivre pour faire un pull est la même que pour push, il suffit de choisir pull sur la fenêtre de synchronisation.
