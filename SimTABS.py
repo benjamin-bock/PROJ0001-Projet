@@ -246,7 +246,7 @@ def simulation_etat_stationnaire(tspan, T0, h, max_jours) :
             
             # Condition de stationnarité
             if diff_T < 0.01 :
-                print("État stationnaire atteint après",jour + 1,"jours.")
+                print("\nQuestion 3.5\nÉtat stationnaire atteint après",jour + 1,"jours.\n")
                 break
         
         # Mettre à jour la température de référence pour le prochain jour
@@ -609,53 +609,16 @@ delta_t_min = 0.1  # Premier point initial
 delta_t_max = 8.0  # Deuxième point initial
 tol = 1e-2  # Tolérance moins stricte
 
-# Vérification des valeurs initiales
-f_min = f(delta_t_min)
-f_max = f(delta_t_max)
-print(f"f({delta_t_min}) = {f_min:.3f}")
-print(f"f({delta_t_max}) = {f_max:.3f}")
-
 resultat_sec = secante(f, delta_t_min, delta_t_max, tol)
 
 delta_t_optimal = resultat_sec[0]
 
-'''
-# Si les signes sont opposés, on peut utiliser la méthode de la sécante
-if f_min * f_max < 0:
-    try:
-        # Utilisation de la méthode de la sécante avec protection
-        x0, x1 = delta_t_min, delta_t_max
-        fx0, fx1 = f_min, f_max
-        
-        for i in range(50):  # Maximum 50 itérations
-            if abs(fx1 - fx0) < 1e-10:  # Éviter division par zéro
-                break
-                
-            x2 = x1 - fx1 * (x1 - x0)/(fx1 - fx0)
-            
-            if abs(x2 - x1) < tol:  # Convergence atteinte
-                delta_t_optimal = x2
-                break
-                
-            x0, x1 = x1, x2
-            fx0, fx1 = fx1, f(x2)
-        else:
-            # Si on sort de la boucle sans break, on utilise la bissection
-            print("La méthode de la sécante n'a pas convergé, utilisation de la bissection")
-            delta_t_optimal = bissection(f, delta_t_min, delta_t_max, tol)
-    except:
-        print("Erreur dans la méthode de la sécante, utilisation de la bissection")
-        delta_t_optimal = bissection(f, delta_t_min, delta_t_max, tol)
-else:
-    print("Pas de changement de signe, utilisation de la bissection")
-    delta_t_optimal = bissection(f, delta_t_min, delta_t_max, tol)
-'''
 
-print(f"Pour atteindre une température maximale de {T_max_d}°C, il faut un ∆t de {delta_t_optimal:.2f} heures")
+print(f"Question 4.2\nPour atteindre une température maximale de {T_max_d}°C, il faut un ∆t de {delta_t_optimal:.2f} heures \n")
 
 # Vérification du résultat
 T_max_final, t_max, T_confort, t_4, T_4 = findTmax(tspan, T0, h, delta_t_optimal)
-print(f"Température maximale atteinte : {T_max_final:.2f}°C")
+print(f"Température maximale atteinte : {T_max_final:.2f}°C \n")
 
 # Représentation graphique avec le delta_t optimal
 t_4 = np.array(t_4)
@@ -677,6 +640,7 @@ plt.show()
 
 # QUESTION 4.3 ##############################################################################################################
 # Simulation avec le delta_t optimal pour obtenir toutes les températures
+
 def simulation_complete(tspan, T0, h, delta_t, nb_jours):
     """
     Simule le système sur plusieurs jours en gardant toutes les données temporelles
@@ -706,9 +670,6 @@ def simulation_etat_stationnaire4(tspan, T0, h, delta_t, max_jours):
     """
     Simule le système jusqu'à l'état stationnaire avec un delta_t constant
     """
-    # Initialisation des tableaux
-    t_tot = np.array([])
-    T_tot = np.zeros((5, 0))
     
     # Listes pour stocker t et T à chaque jour
     t_f = []  # Liste pour stocker les temps t de chaque jour
@@ -737,7 +698,7 @@ def simulation_etat_stationnaire4(tspan, T0, h, delta_t, max_jours):
         if jour >= 1:
             diff_T = abs(T_room_jour - T_room_jour_prec)
             if diff_T < 0.01:
-                print(f"État stationnaire atteint après {jour + 1} jours.")
+                print(f"État stationnaire atteint après {jour + 1} jours.\n")
                 break
         
         # Mettre à jour pour le prochain jour
@@ -785,24 +746,13 @@ tol = 1e-2  # Tolérance
 resultat_sec = secante(f_stationnaire, delta_t_min, delta_t_max, tol)
 delta_t_optimal = resultat_sec[0]
 
-print(f"\nPour atteindre une température maximale de {T_max_d}°C à l'état stationnaire:")
-print(f"∆t optimal = {delta_t_optimal:.2f} heures")
+print(f"Question 4.3\nPour atteindre une température maximale de {T_max_d}°C à l'état stationnaire: ∆t optimal = {delta_t_optimal:.2f} heures \n")
 
 # Vérification du résultat avec le delta_t optimal trouvé
 t_stat, T_stat, jour_stat = simulation_etat_stationnaire4(tspan, T0, h, delta_t_optimal, max_jours)
 T_stat = np.array(T_stat)
 T_confort_final = (T_stat[-1, 0] + T_stat[-1, 4])/2
-print(f"Température maximale atteinte à l'état stationnaire : {T_confort_final:.2f}°C")
-
-# Vérification de la norme EN15251
-if abs(T_confort_final - T_max_d) <= 0.5:  # Tolérance de ±0.5°C
-    print("\nLa norme EN15251 est respectée :")
-    print(f"- Température de confort atteinte : {T_confort_final:.2f}°C")
-    print(f"- Écart par rapport à la consigne : {abs(T_confort_final - T_max_d):.2f}°C")
-else:
-    print("\nLa norme EN15251 n'est pas respectée :")
-    print(f"- Température de confort atteinte : {T_confort_final:.2f}°C")
-    print(f"- Écart par rapport à la consigne : {abs(T_confort_final - T_max_d):.2f}°C")
+print(f"Température maximale atteinte à l'état stationnaire : {T_confort_final:.2f}°C\n")
 
 # Représentation graphique
 t_stat = np.array(t_stat)/(tf-t0)  # Conversion en jours
@@ -849,10 +799,10 @@ conforme = np.all((T_confort_periode >= 19.5) & (T_confort_periode <= 24))
 T_min_periode = np.min(T_confort_periode)
 T_max_periode = np.max(T_confort_periode)
 
-print("\nVérification de la norme EN (période 8h-19h du dernier jour):")
+print("Vérification de la norme EN15251 (période 8h-19h du dernier jour):")
 print(f"Température minimale: {T_min_periode:.2f}°C")
 print(f"Température maximale: {T_max_periode:.2f}°C")
-print(f"La norme EN est {'respectée' if conforme else 'non respectée'}")
+print(f"La norme EN15251 est {'respectée' if conforme else 'non respectée'}.\n")
 
 # Graphique de l'évolution complète
 plt.figure(figsize=(12, 6))
