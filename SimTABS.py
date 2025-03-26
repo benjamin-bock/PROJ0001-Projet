@@ -674,3 +674,210 @@ plt.title(f"Évolution de la température de confort pour ∆t optimal = {delta_
 plt.grid(True)
 plt.legend()
 plt.show()   
+
+# QUESTION 4.3 ##############################################################################################################
+# Simulation avec le delta_t optimal pour obtenir toutes les températures
+def simulation_complete(tspan, T0, h, delta_t, nb_jours):
+    """
+    Simule le système sur plusieurs jours en gardant toutes les données temporelles
+    """
+    # Initialisation des tableaux pour stocker toutes les données
+    t_tot = np.array([])
+    T_tot = np.zeros((5, 0))
+    
+    # Simulation jour par jour
+    for jour in range(nb_jours):
+        # Simulation d'une journée
+        t_jour, T_jour = scenario4(tspan, T0, h, delta_t)
+        
+        # Ajout du décalage temporel pour ce jour
+        t_jour = t_jour + jour * 24
+        
+        # Concaténation avec les résultats précédents
+        t_tot = np.concatenate((t_tot, t_jour))
+        T_tot = np.concatenate((T_tot, T_jour), axis=1)
+        
+        # Mise à jour des conditions initiales pour le jour suivant
+        T0 = T_jour[:, -1]
+    
+    return t_tot, T_tot
+
+def simulation_etat_stationnaire4(tspan, T0, h, delta_t, max_jours):
+    """
+    Simule le système jusqu'à l'état stationnaire avec un delta_t constant
+    """
+    # Initialisation des tableaux
+    t_tot = np.array([])
+    T_tot = np.zeros((5, 0))
+    
+    # Listes pour stocker t et T à chaque jour
+    t_f = []  # Liste pour stocker les temps t de chaque jour
+    T_f = []  # Liste pour stocker les températures T de chaque jour
+    
+    # Conditions initiales
+    t_f.append(tspan[0])
+    T_f.append(T0)
+    
+    # Stocke la température initiale de la pièce
+    T_room_jour_prec = T0[0]
+    
+    # Simulation sur plusieurs jours consécutifs
+    for jour in range(max_jours):
+        # On résout l'EDO pour un jour avec le même delta_t
+        t_4, T_4 = scenario4(tspan, T0, h, delta_t)
+        
+        # Stocker t et T dans les listes
+        t_f.append(t_4[-1] + jour * (tspan[-1]-tspan[0]))
+        T_f.append(T_4[:, -1])
+        
+        # Mettre à jour T_room_jour_actuel
+        T_room_jour = T_4[0, -1]
+        
+        # Vérifier les conditions d'état stationnaire
+        if jour >= 1:
+            diff_T = abs(T_room_jour - T_room_jour_prec)
+            if diff_T < 0.01:
+                print(f"État stationnaire atteint après {jour + 1} jours.")
+                break
+        
+        # Mettre à jour pour le prochain jour
+        T0 = T_4[:, -1]
+        T_room_jour_prec = T_room_jour
+            
+    return t_f, T_f, jour+1
+
+def f_stationnaire(delta_t):
+    """
+    Fonction dont on cherche la racine : f(delta_t) = max(T_confort) - T_max_d 
+    Vérifie que la température de confort ne dépasse jamais T_max_d à tout instant
+    """
+    if delta_t < 0:  # Protection contre les valeurs négatives
+        return float('inf')
+        
+    # Simulation sur plusieurs jours jusqu'à l'état stationnaire
+    nb_jours = 5  # On simule sur 5 jours pour atteindre l'état stationnaire
+    t_complet, T_complet = simulation_complete(tspan, T0, h, delta_t, nb_jours)
+    
+    # Calcul de la température de confort pour tous les points
+    T_confort = (T_complet[0, :] + T_complet[4, :])/2
+    
+    # On regarde le dernier jour (état stationnaire)
+    debut_dernier_jour = (nb_jours - 1) * 24
+    indices_dernier_jour = t_complet >= debut_dernier_jour
+    T_confort_dernier = T_confort[indices_dernier_jour]
+    
+    # On vérifie le maximum sur toute la journée
+    T_max = np.max(T_confort_dernier)
+    
+    return T_max - T_max_d
+
+# Test de la fonction pour T_max_d = 24°C
+T_max_d = 24.0  # Température maximale à ne jamais dépasser
+max_jours = 100
+
+# Points initiaux pour la méthode de la sécante
+delta_t_min = 0.1  # Premier point initial
+delta_t_max = 8.0  # Deuxième point initial
+tol = 1e-2  # Tolérance
+
+
+# Utilisation de la méthode de la sécante
+resultat_sec = secante(f_stationnaire, delta_t_min, delta_t_max, tol)
+delta_t_optimal = resultat_sec[0]
+
+print(f"\nPour atteindre une température maximale de {T_max_d}°C à l'état stationnaire:")
+print(f"∆t optimal = {delta_t_optimal:.2f} heures")
+
+# Vérification du résultat avec le delta_t optimal trouvé
+t_stat, T_stat, jour_stat = simulation_etat_stationnaire4(tspan, T0, h, delta_t_optimal, max_jours)
+T_stat = np.array(T_stat)
+T_confort_final = (T_stat[-1, 0] + T_stat[-1, 4])/2
+print(f"Température maximale atteinte à l'état stationnaire : {T_confort_final:.2f}°C")
+
+# Vérification de la norme EN15251
+if abs(T_confort_final - T_max_d) <= 0.5:  # Tolérance de ±0.5°C
+    print("\nLa norme EN15251 est respectée :")
+    print(f"- Température de confort atteinte : {T_confort_final:.2f}°C")
+    print(f"- Écart par rapport à la consigne : {abs(T_confort_final - T_max_d):.2f}°C")
+else:
+    print("\nLa norme EN15251 n'est pas respectée :")
+    print(f"- Température de confort atteinte : {T_confort_final:.2f}°C")
+    print(f"- Écart par rapport à la consigne : {abs(T_confort_final - T_max_d):.2f}°C")
+
+# Représentation graphique
+t_stat = np.array(t_stat)/(tf-t0)  # Conversion en jours
+T_stat = np.array(T_stat)
+
+# Calcul de la température de confort pour tous les points
+T_confort = (T_stat[:, 0] + T_stat[:, 4])/2
+
+plt.figure(figsize=(12, 6))
+plt.plot(t_stat, T_confort, 'b-', label='Température de confort')
+plt.axhline(y=T_max_d, color='g', linestyle='--', label=f'T_max désirée = {T_max_d}°C')
+plt.axhline(y=T_confort[-1], color='r', linestyle='--', label=f'T_max atteinte = {T_confort[-1]:.2f}°C')
+plt.xlabel("Temps (jours)")
+plt.ylabel("Température de confort (°C)")
+plt.title(f"Évolution de la température de confort à l'état stationnaire (∆t = {delta_t_optimal:.2f}h)")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
+
+# Simulation sur plusieurs jours
+nb_jours = 5  # On simule sur 5 jours pour voir la stabilisation
+t_complet, T_complet = simulation_complete(tspan, T0, h, delta_t_optimal, nb_jours)
+
+# Calcul de la température de confort pour tous les points
+T_confort = (T_complet[0, :] + T_complet[4, :])/2
+
+# Vérification de la norme EN (19.5°C - 24°C entre 8h et 19h)
+# On ne regarde que le dernier jour
+debut_dernier_jour = (nb_jours - 1) * 24
+indices_dernier_jour = t_complet >= debut_dernier_jour
+
+t_dernier = t_complet[indices_dernier_jour] - debut_dernier_jour
+T_confort_dernier = T_confort[indices_dernier_jour]
+
+# Période 8h-19h du dernier jour
+masque_periode = (t_dernier >= 8) & (t_dernier <= 19)
+T_confort_periode = T_confort_dernier[masque_periode]
+t_periode = t_dernier[masque_periode]
+
+# Vérification des limites
+conforme = np.all((T_confort_periode >= 19.5) & (T_confort_periode <= 24))
+T_min_periode = np.min(T_confort_periode)
+T_max_periode = np.max(T_confort_periode)
+
+print("\nVérification de la norme EN (période 8h-19h du dernier jour):")
+print(f"Température minimale: {T_min_periode:.2f}°C")
+print(f"Température maximale: {T_max_periode:.2f}°C")
+print(f"La norme EN est {'respectée' if conforme else 'non respectée'}")
+
+# Graphique de l'évolution complète
+plt.figure(figsize=(12, 6))
+plt.plot(t_complet/24, T_confort, 'b-', label='Température de confort')
+plt.axhline(y=24, color='r', linestyle='--', label='Limite supérieure (24°C)')
+plt.axhline(y=19.5, color='g', linestyle='--', label='Limite inférieure (19.5°C)')
+plt.xlabel("Temps (jours)")
+plt.ylabel("Température de confort (°C)")
+plt.title(f"Évolution de la température de confort sur {nb_jours} jours (∆t = {delta_t_optimal:.2f}h)")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Graphique détaillé du dernier jour
+plt.figure(figsize=(12, 6))
+plt.plot(t_dernier, T_confort_dernier, 'b-', label='Température de confort')
+plt.axhline(y=24, color='r', linestyle='--', label='Limite supérieure (24°C)')
+plt.axhline(y=19.5, color='g', linestyle='--', label='Limite inférieure (19.5°C)')
+plt.axvline(x=8, color='gray', linestyle=':', label='Période 8h-19h')
+plt.axvline(x=19, color='gray', linestyle=':')
+plt.xlabel("Heure de la journée")
+plt.ylabel("Température de confort (°C)")
+plt.title("Température de confort - Dernier jour")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
