@@ -19,6 +19,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+\sloppy % Permet plus de tolérance d'espace entre les mots
+
 % front page
 \input{titlepage}
 
@@ -39,7 +41,7 @@
 
 Le projet s'inscrit dans le cadre de l'optimisation énergétique des bâtiments et du domaine de la construction en générale. Le but étant d'apporter aux étudiants en première année de bachelier en ingénierie civile des outils modernes de modélisation numérique. Ce projet en veut pour preuve l'utilisation du langage de programmation Python, de loin le langage le plus populaire en 2025. Pour plus d'informations sur ce sujet, voir la source \cite{Tiobe2025}. \\
 Le sujet de ce projet tourne autour du contrôle de transmission de chaleur aux travers des différents parois qui composent les murs d'une bâtiment thermiquement actif. \\
-La suite de ce rapport sera consacré à la réponse aux questions posées dans le fichier \texttt{Enonce_2025.pdf}, où la numération des sections et leurs sous-sections correspondent, respectivement, aux numéros des questions répondues.
+La suite de ce rapport sera consacré à la réponse aux questions posées dans le fichier \texttt{Enonce\_2025.pdf}, où la numération des sections et leurs sous-sections correspondent, respectivement, aux numéros des questions répondues.
 
 \renewcommand\thesection{\arabic{section}} % Rétablit la numérotation normale
 \setcounter{section}{0} % Remet le compteur à 0 pour que la prochaine section soit 1
@@ -48,6 +50,7 @@ La suite de ce rapport sera consacré à la réponse aux questions posées dans 
 
 Cette première question vise à modéliser deux fontions : \texttt{secante(f, x0, x1, tol)} et \texttt{bissection(f, x0, x1, tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction f donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant à choisir, judicieusement, laquelle des deux se voit être la plus encline à être utilisée dans le contexte rencontré.
 
+\\ \\ \\ \\ \\
 To tie-in the concepts seen in ME303, we will turn our attention to the fascinating physical phenomenon of sonoluminescence. This occurs when a single bubble, usually of micrometer in size, within a liquid emits a short burst of light when imploding under an externally excited acoustic source. As the energy is concentrated into a point source, local temperatures in the collapsing bubble can reach up to 10,000 K for up to 50 pico seconds and visible light is emitted.
 
 The origin of the light emission is an unsolved physical problem and obviously outside the scope of ME303. For project 1, we will be studying the governing equations behind the bubble oscillation leading up to a the light burst.
