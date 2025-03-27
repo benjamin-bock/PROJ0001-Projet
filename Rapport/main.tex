@@ -29,9 +29,12 @@
 %If a table of content is needed, simply uncomment the following lines
 \renewcommand{\contentsname}{Table des matières}
 \renewcommand{\listfigurename}{Table des figures}
+\renewcommand{\listtablename}{Liste des tableaux}
+
 \tableofcontents
 \newpage
 \listoffigures
+\listoftables
 \newpage
 
 
@@ -48,44 +51,88 @@ La suite de ce rapport sera consacré à la réponse aux questions posées dans 
 
 \section{Recherche de racine}
 
-Cette première question vise à modéliser deux fontions : \texttt{secante(f, x0, x1, tol)} et \texttt{bissection(f, x0, x1, tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction f donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant à choisir, judicieusement, laquelle des deux se voit être la plus encline à être utilisée dans le contexte rencontré.
+Cette première question vise à modéliser deux fonctions : \texttt{secante(f,x0,x1,tol)} et \texttt{bissection(f,x0,x1,tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction $f(x)$ donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant à choisir, judicieusement, laquelle des deux se voit être la plus encline à être utilisée dans le contexte rencontré. Ces fonctions doivent retourner un objet de type \textit{list} avec deux valeurs, \texttt{x} et \texttt{statut}.
 
-\\ \\ \\ \\ \\
-To tie-in the concepts seen in ME303, we will turn our attention to the fascinating physical phenomenon of sonoluminescence. This occurs when a single bubble, usually of micrometer in size, within a liquid emits a short burst of light when imploding under an externally excited acoustic source. As the energy is concentrated into a point source, local temperatures in the collapsing bubble can reach up to 10,000 K for up to 50 pico seconds and visible light is emitted.
+\subsection{Bissection}
+    La fonction \texttt{bissection} se base sur la méthode d'analyse numérique éponyme de recherche de racine. Celle-ci prend en arguments la fonction $f(x)$ elle-même, deux points d'abscisses différents et la tolérance d'erreur maximale admissible par l'algorithme. Afin d'assurer le bon fonctionnement de l'algorithme, il vient de vérifier les points suivants :
+\begin{enumerate}[label=\roman*.]
+    \item Hypothèses de la méthode : 
+        \begin{itemize}
+            \item 
+                Les images des deux points initiaux, \texttt{x0} et \texttt{x1}, doivent être de signes contraires. Ceci peut-être vérifié en testant
+                \begin{lstlisting}[language=Python]
+                if(fx0*fx1<0):
+                    
+                    '''Algorithme de la bissection'''
+                    
+                else:
+                    return [-1, 1]
+                \end{lstlisting}
+                où \texttt{fxi} désigne l'image de la fonction $f(x)$ évaluée au point $x_i$. \\
+                En effet, si le produit $f(x_0)f(x_1) < 0$, les deux images sont de signes contraires.
+            \item
+                La fonction $f(x)$ doit être continue dans l'intervalle $[x_0 , x_1]$, soit $f \in C_0([x_0,x1])$. Malheureusement, aucune fonction de la bibliothèque standard Python ne le permet, tout comme les bibliothèques externes \texttt{numpy}, \texttt{scipy} et \texttt{matplotlib}. Il est ainsi impossible de prévoir le caractère de la fonction sur l'intervalle considéré. Supposons pour le projet que la fonction $f(x)$ dont on cherche la racine est bien continue sur l'intervalle. Nous verrons par la suite que cette hypothèse est acceptable car nous étudions un phénomène physique d'évolution de température dans un espace, en trois dimensions, continu, de sorte que la fonction est bien continue sur l'intervalle et l'hypothèse est vérifiée.
 
-The origin of the light emission is an unsolved physical problem and obviously outside the scope of ME303. For project 1, we will be studying the governing equations behind the bubble oscillation leading up to a the light burst.
-\begin{figure}[h!]
-\centering
-\includegraphics[width=0.45\textwidth]{figures/goose.png} 
-\caption{A goose.}
-\label{goose}
-\end{figure}
+        \end{itemize}
+    \item 
+    Nombre d'appels de la fonction $f(x)$ :
+        \begin{itemize}
+            \item Une attention particulière a été portée à ce sujet. En effet, l'algorithme n'appelle qu'une seule fois $f(x)$ par itération. Ce qui est logique car la méthode de la bissection consiste à calculer un nouveau point pour chaque nouvelle itération, en se rapprochant, pas à pas, de la solution exacte.
+        \end{itemize}
+\end{enumerate}
 
+\subsection{Sécante}
+    La fonction \texttt{secante} se base sur la méthode d'analyse numérique éponyme de recherche de racine. Son but est le même que la fonction précédente mais possède son lot de différence auxquelles le programmeur doit tenir rigueur. Tout comme \texttt{bissection}, celle-ci prend en arguments la fonction $f(x)$ elle-même, deux points d'abscisses différents et la tolérance d'erreur maximale admissible par l'algorithme. Afin d'assurer le bon fonctionnement de l'algorithme, il vient de vérifier les points suivants :
+\begin{enumerate}[label=\roman*.]
+    \item Hypothèses de la méthode : 
+        \begin{itemize}
+            \item Celles-ci sont exactement les mêmes que pour la bissection. On procède de manière analogue que précédemment.
+        \end{itemize}
+        
+    \item 
+    Nombre d'appels de la fonction $f(x)$ : 
+        \begin{itemize}
+            \item Idem bissection
+        \end{itemize}
+        
+\end{enumerate}
 
-The radius of a bubble under a varying pressure field is defined by the Rayleigh-Plesset equation. This equation is derived using standard conservation law under a number of simplifying assumptions:
+\subsection{Comparaison des deux fonctions}
+
+Le tableau \ref{tab:comparaison} met en évidence les différences entre les deux fonctions \texttt{bissection} et \texttt{secante}. \\
+Notons que pour les deux fonctions, il est possible de déterminer une approximation du nombre d'itérations maximales en fonction de la tolérance \texttt{tol} et des points initiaux \texttt{x0}, \texttt{x1}. Ceci peut-être donné avec la formule
+
 \begin{equation}
-\rho_l \left(R\ddot{R} + \frac{3}{2}\dot{R}^2\right) = p_{gas} -P(t) -P_0 +\frac{R}{c}\frac{d p_{gas}}{dt} - 4\mu \frac{\dot{R}}{R}-\frac{2\sigma}{R}
-\label{RP}
+    k_{\text{max}} = \log_2 \left( \frac{|x_1 - x_0|}{2 \cdot \text{tol}} \right)
+    \label{eq:k_max}
 \end{equation}
-In the above equation $R(t)$ [m] represents the bubble radius. The other terms are: $\rho_l$ [$kg\cdot m^3$]  the density of the liquid, $p_{gas}$ [Pa] the pressure of the gas inside the bubble, $P(t)$ [Pa] the imposed oscillatory pressure field, $P_0$ [Pa] the baseline pressure, $c$ [$m/s$] speed of sound in the liquid, $\mu$ [$Pa\cdot s$] molecular viscosity of the liquid and $\sigma$ [$kg\cdot s^{-2}$] the surface tension at the bubble-water interface.
+ou encore en Python
 
-For more contextual information on the bubble dynamic phenomena, please see the following sources: \cite{Hilgenfeldt1998}, \cite{Kreider2011}, and \cite{Lohse2003}.
+\begin{lstlisting}[language=Python]
+            k_max = int(np.log2(np.abs(x1-x0)/(2*tol)))
+\end{lstlisting}
+
+\begin{table}[b!]
+    
+    \begin{tabular}{| m{6em} | m{6cm}| m{6.2cm} |}
+    \hline
+    \textbf{Critère} & \textbf{Bissection} & \textbf{Secante} \\
+    \hline
+    \textbf{Vitesse} & Lente, surtout pour des intervalles larges (réduit de moitié à chaque itération). & Plus rapide que la bissection, mais dépend du choix des points initiaux. \\
+    \hline
+    \textbf{Ordre de convergence} & Linéaire : 1 & Superlinéaire : \varphi \approx 1.618 \\
+    \hline
+    \textbf{Robustesse} & Très robuste : la méthode converge toujours si les conditions sont remplies. & Moins robuste : peut échouer si les points initiaux sont mal choisis ou si la fonction n'est pas bien définie autour des points initiaux. \\
+    \hline
+    \textbf{Exigence des conditions initiales} & Nécessite seulement deux bornes avec un signe opposé. & Nécessite deux points initiaux distincts et un bon choix pour garantir la convergence. \\
+    \hline
+    \end{tabular}
+    \caption{Comparaison des fonctions \texttt{bissection} et \texttt{secante}}
+    \label{tab:comparaison}
+
+\end{table}
 
 
-
-\section{Questions}
-\emph{This section answers the individual questions of the project description.  For each question, provide an answer and short analysis.}
-\subsection*{Question 1: Forced bubble oscillation}
-\subsubsection*{(a)} \emph{References to equations can be written out in latex \eqref{RP}. Similarly, figures  \ref{goose} and sections \ref{Q2} may also be referenced.}
-\subsubsection*{(b)} \emph{Citations require the mybib.tex file to be extended with the desired references. Students can use JabRef (\url{http://www.jabref.org}) to construct the mybib.bib file. Students are invited to link their Mendelay, CiteULike and Zotero account directly to Overleaf. }
-
-\subsection{Question 2: Bubble evolution \label{Q2}}
-
-
-\vfill
-
-\section*{Students' contributions}
-Mr. Goose and Mrs. Goose worked together to understand the problem and write the numerical codes. The summary of the problem and Q2 were written up by Mr. Goose, Q1 and Q3 were completed by Mrs. Goose. Both students corrected the final report.
 
 \newpage
 \bibliography{mybib}

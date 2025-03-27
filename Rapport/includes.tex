@@ -31,7 +31,25 @@
 \usepackage[english,french]{babel}
 \usepackage[T1]{fontenc}
 \usepackage{listings} % Pour améliorer l'affichage du code
+\usepackage{enumitem}
+\usepackage{listings} % Pour afficher du code
+\usepackage{xcolor}   % Pour colorer le code
+\usepackage{longtable}
 
+\captionsetup[table]{name=Tableau}  % Remplacer "Table" par "Tableau"
+
+% Définition du style Python
+\lstdefinelanguage{Python}{
+  keywords={from, import, as, def, return, if, elif, else, for, while, break, continue, in, not, and, or, pass, lambda, with, yield, try, except, finally, class, True, False, None},
+  keywordstyle=\color{blue}\bfseries,
+  comment=[l]{\#},
+  commentstyle=\color{gray},
+  string=[b]",
+  stringstyle=\color{red},
+  morestring=[b]',
+  basicstyle=\ttfamily\small,
+  showstringspaces=false
+}
 
 
 % table of content
