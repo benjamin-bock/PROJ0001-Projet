@@ -32,7 +32,6 @@
 \renewcommand{\listtablename}{Liste des tableaux}
 
 \tableofcontents
-\newpage
 \listoffigures
 \listoftables
 \newpage
@@ -96,7 +95,7 @@
     
     \subsection{Comparaison des deux fonctions}
     
-        Le Tableau \ref{tab:comparaison} met en évidence les différences entre les deux fonctions \texttt{bissection} et \texttt{secante}. \\
+        Le tableau \ref{tab:comparaison} met en évidence les différences entre les deux fonctions \texttt{bissection} et \texttt{secante}. \\
         Notons que pour les deux fonctions, il est possible de déterminer une approximation du nombre d'itérations maximales en fonction de la tolérance \texttt{tol} et des points initiaux \texttt{x0}, \texttt{x1}. Ceci peut-être donné avec la formule
         
         \begin{equation}
@@ -132,7 +131,7 @@
     \subsection{Interpoler $G(t)$}
         L'interpolation de $G(t)$ se fait en discrétisant l'intervalle de temps en un grand nombre de valeurs entre 0 et 24 heures. En l'occurrence, un nombre de 400 points a été choisi afin de garantir une bonne pseudo-continuité. Ce nombre est assez grand pour la suite du projet sans consommer trop de mémoire. Ensuite, il vient d'appeler la fonction \texttt{CubicSpline} de la sous-bibliothèque \texttt{interpolate} de \texttt{scipy}. Ce choix a été motivé par les variations du flux au cours de la journée. En effet, $G(t)$ est décroissant jusque 10 heures, croissant de 10 à 20 heures et de nouveau décroissant jusque minuit. Ce comportement se prête bien à une fonction cubique d'où le choix de \texttt{CubicSpline}. N'ayant pas d'informations sur les conditions aux limites, la valeur de l'argument \texttt{bc\_type} est laissée sur sa valeur par défaut, \texttt{not-a-knot}.
     \subsection{Vérification graphique}
-        Afin de vérifier que la fonction $G(t)$ a bien été interpolée, traçons l'allure de $G(t)$ sur un graphe à l'aide de la sous-bibliothèque \texttt{pyplot} de \texttt{matplotlib}. Celle-ci nous retourne la Figure \ref{fig:PerteEtGain}.
+        Afin de vérifier que la fonction $G(t)$ a bien été interpolée, traçons l'allure de $G(t)$ sur un graphe à l'aide de la sous-bibliothèque \texttt{pyplot} de \texttt{matplotlib}. Celle-ci nous retourne la figure \ref{fig:PerteEtGain}.
         \begin{figure}
             \centering
             \includegraphics[width=1\linewidth]{Rapport/figures/PerteEtGain.png}
@@ -143,7 +142,7 @@
         
 \section{Mise en place de la modélisation}
     \subsection{Encodage de \texttt{odefunction}}
-        L'énonce impose qu'\texttt{odefunction} reçoive en arguments les températures en °C, il faut donc incrémenter chaque température de 273,15°C pour passer de degré Celsius à Kelvin, ce qui est logique car les équations, traitées par la suite, sont exprimées en Kelvin. La fonction consiste à définir le système d'équations différentielles ordinaires 
+        L'énonce impose qu'\texttt{odefunction} reçoive en arguments les températures en $\degree C$, il faut donc incrémenter chaque température de $273,15\degree C$ pour passer de degré Celsius à Kelvin, ce qui est logique car les équations, traitées par la suite, sont exprimées en Kelvin. La fonction consiste à définir le système d'équations différentielles ordinaires 
         \begin{equation}
            C_{cc} \frac{dT_{cc}}{dt} = -\frac{1}{R_{cc-c1}} (T_{cc} - T_{c1}) - \frac{1}{R_{x}} (T_{cc} - T_{t}) + \frac{1}{R_{c2-cc}} (T_{c2} - T_{cc})
             \label{eq:Tcc}
@@ -171,7 +170,7 @@
         Dans le cas du scénario 1, on a
         \begin{itemize}
             \item Si $\texttt{t} \in [0,4]$ :
-            $T_w = 18°C = 291,15 K$
+            $T_w = 18\degree C = 291,15 K$
             \item Sinon :
             Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
         \end{itemize}
@@ -184,8 +183,36 @@
             T_{i+1} = T_i + h\cdot f(t_i, T_i)
         \end{equation}
         où $f(t_i, T_i)$ représente \texttt{odefunction(t[i], T[i])} et $h$ est le pas.
+        Les paramètres de la fonction sont
+        \begin{itemize}
+            \item \texttt{[t0,tf]} : l'intervalle de temps sur lequel résoudre le système d'EDO,
+            \item \texttt{T0} : les valeurs de température initiales, toutes égales à $15\degree C$,
+            \item \texttt{h} : le pas, représentant l'intervalle entre deux points consécutifs dans la discrétisation du temps.
+        \end{itemize}
         
+    \subsection{Méthode Runge-Kutta d'ordre 4/5}
+
+        La méthode de Runge-Kutta d'ordre 4/5, aussi appelé RK45, utilisée par la fonction \texttt{solve\_ivp} de la sous-bibliothèque \texttt{integrate} de \texttt{scipy}, permet une plus grande précision qu'Euler car elle ajuste dynamiquement le pas pour optimiser la précision de la solution.
+        Les paramètres de la fonction sont
+        \begin{itemize}
+            \item \texttt{[t0,tf]} : l'intervalle de temps sur lequel résoudre le système d'EDO,
+            \item \texttt{T0} : les valeurs de température initiales, toutes égales à $15\degree C$,
+            \item \texttt{rtol} : la tolérance relative du solveur, \texttt{solve\_ivp}.
+        \end{itemize}
+
+        Les deux méthodes sont valables et aboutissent, en principe, aux mêmes résultats numériques, comme en témoigne la figure \ref{fig:Comparaison}.
         
+        \begin{figure}
+            \centering
+            \includegraphics[width=1\linewidth]{Rapport/figures/ComparaisonEulerRK45.png}
+            \caption{Comparaison entre Euler et Runge-Kutta 45}
+            \label{fig:Comparaison}
+        \end{figure}
+
+        En somme, la méthode d'Euler est plus rapide mais peut manquer de précision car cette dernière dépend du pas $h$. Tandis que \texttt{solve\_ivp} est plus précis mais plus coûteux. Privilégier une ou l'autre méthode dépend des besoins du programmeur : précision ou économie de ressources.
+        
+    \subsection{Convergence d'Euler en fonction du pas $h$}
+        Une analyse de l'erreur en fonction du pas de temps $h$ a été réalisée en comparant la solution obtenue avec Euler à une solution de référence avec \texttt{solve\_ivp}.
 
 
         
