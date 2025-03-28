@@ -49,7 +49,7 @@ La suite de ce rapport sera consacré à la réponse aux questions posées dans 
 \renewcommand\thesection{\arabic{section}} % Rétablit la numérotation normale
 \setcounter{section}{0} % Remet le compteur à 0 pour que la prochaine section soit 1
 
-\section{Recherche de racine}
+\section{Recherche de racines}
 
 Cette première question vise à modéliser deux fonctions : \texttt{secante(f,x0,x1,tol)} et \texttt{bissection(f,x0,x1,tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction $f(x)$ donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant à choisir, judicieusement, laquelle des deux se voit être la plus encline à être utilisée dans le contexte rencontré. Ces fonctions doivent retourner un objet de type \textit{list} avec deux valeurs, \texttt{x} et \texttt{statut}.
 
@@ -59,17 +59,14 @@ Cette première question vise à modéliser deux fonctions : \texttt{secante(f,x
     \item Hypothèses de la méthode : 
         \begin{itemize}
             \item 
-                Les images des deux points initiaux, \texttt{x0} et \texttt{x1}, doivent être de signes contraires. Ceci peut-être vérifié en testant
-                \begin{lstlisting}[language=Python]
-                if(fx0*fx1<0):
-                    
-                    '''Algorithme de la bissection'''
-                    
-                else:
-                    return [-1, 1]
-                \end{lstlisting}
-                où \texttt{fxi} désigne l'image de la fonction $f(x)$ évaluée au point $x_i$. \\
-                En effet, si le produit $f(x_0)f(x_1) < 0$, les deux images sont de signes contraires.
+                Les images des deux points initiaux, \texttt{x0} et \texttt{x1}, doivent être de signes contraires. Ceci peut-être vérifié en testant le signe de l'expression $f(x_1)f(x_0)$. Ainsi, viennent deux cas possibles :
+                
+                \begin{itemize}
+                    \item Cas 1, $f(x_1)f(x_0) < 0$ : \vspace{2mm} \\ 
+                    Les deux images sont de signes contraires, l'hypothèse est donc vérifiée. \vspace{2mm} 
+                    \item Cas 2, $f(x_1)f(x_0) > 0$ : \vspace{2mm} \\
+                    Les deux images sont de mêmes signes, la méthode de la bissection n'est pas possible sur l'intervalle considéré. On retourne \texttt{statut = 1}.
+                \end{itemize}
             \item
                 La fonction $f(x)$ doit être continue dans l'intervalle $[x_0 , x_1]$, soit $f \in C_0([x_0,x1])$. Malheureusement, aucune fonction de la bibliothèque standard Python ne le permet, tout comme les bibliothèques externes \texttt{numpy}, \texttt{scipy} et \texttt{matplotlib}. Il est ainsi impossible de prévoir le caractère de la fonction sur l'intervalle considéré. Supposons pour le projet que la fonction $f(x)$ dont on cherche la racine est bien continue sur l'intervalle. Nous verrons par la suite que cette hypothèse est acceptable car nous étudions un phénomène physique d'évolution de température dans un espace, en trois dimensions, continu, de sorte que la fonction est bien continue sur l'intervalle et l'hypothèse est vérifiée.
 
@@ -103,22 +100,18 @@ Le tableau \ref{tab:comparaison} met en évidence les différences entre les deu
 Notons que pour les deux fonctions, il est possible de déterminer une approximation du nombre d'itérations maximales en fonction de la tolérance \texttt{tol} et des points initiaux \texttt{x0}, \texttt{x1}. Ceci peut-être donné avec la formule
 
 \begin{equation}
-    k_{\text{max}} = \log_2 \left( \frac{|x_1 - x_0|}{2 \cdot \text{tol}} \right)
+    k_{\text{max}} = \log_2 \left( \frac{|x_1 - x_0|}{2 \cdot \text{tol}} \right).
     \label{eq:k_max}
 \end{equation}
-ou encore en Python
 
-\begin{lstlisting}[language=Python]
-            k_max = int(np.log2(np.abs(x1-x0)/(2*tol)))
-\end{lstlisting}
 
 \begin{table}[b!]
     
     \begin{tabular}{| m{6em} | m{6cm}| m{6.2cm} |}
     \hline
-    \textbf{Critère} & \textbf{Bissection} & \textbf{Secante} \\
+    \textbf{Critère} & \textbf{Bissection} & \textbf{Sécante} \\
     \hline
-    \textbf{Vitesse} & Lente, surtout pour des intervalles larges (réduit de moitié à chaque itération). & Plus rapide que la bissection, mais dépend du choix des points initiaux. \\
+    \textbf{Vitesse} & Lente, surtout pour des intervalles larges : 48 µs. & Plus rapide que la bissection : 32 µs \\
     \hline
     \textbf{Ordre de convergence} & Linéaire : 1 & Superlinéaire : \varphi \approx 1.618 \\
     \hline
@@ -132,6 +125,7 @@ ou encore en Python
 
 \end{table}
 
+\section{Pertes et gains de chaleur}
 
 
 \newpage

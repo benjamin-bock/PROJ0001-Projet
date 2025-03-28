@@ -36,6 +36,32 @@
 \usepackage{xcolor}   % Pour colorer le code
 \usepackage{longtable}
 
+\newcommand{\makefootnotelist}[1]{%
+    \parbox{0.8\textwidth} {%
+        \footnotesize{%
+            \renewcommand*{\do}[1]{##1\\}%
+            \dolistcsloop{#1}}}}%
+\newcommand{\fancyfootnote}[1]{%
+    \footnotemark{}%
+    \def\listname{footlist\thepage}%
+    \def\n{$^{\the\numexpr\value{footnote}}$}
+    \ifcsdef{\listname}%
+        {\listcseadd{\listname}{\n\ #1}}%
+        {\csedef{\listname}{}%
+        \listcseadd{\listname}{\n\ #1}}%
+    \fancypagestyle{fancyfootnote}{%
+        \fancyfoot[LO,RE]{\makefootnotelist{\listname}}%
+        \fancyfoot[RO,LE]{\thepage}%
+        \fancyfoot[C]{}%
+    }\thispagestyle{fancyfootnote}}%
+
+\fancypagestyle{plain}{%
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
+
+
 \captionsetup[table]{name=Tableau}  % Remplacer "Table" par "Tableau"
 
 % Définition du style Python
