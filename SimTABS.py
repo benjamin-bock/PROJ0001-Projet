@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp as ode45 # Defining the solver (ode45)
 from scipy.interpolate import interp1d
 from RechercheRacine import secante
-from RechercheRacine import bissection
 
 
 '''Signification des constantes
@@ -179,7 +178,7 @@ t_ref, T_ref = calculTemperaturesIVP(tspan, T0, rtol)
 
 # Valeurs candidates de h
 
-h_test = [0.1, 0.05, 0.01, 0.005, 0.001]
+h_test = [0.05, 0.01, 0.005, 0.001, 0.0005]
 
 comparaisonEulerIVP(t_ref, T_ref, h_test)
 

@@ -4,7 +4,9 @@ def bissection(f,x0,x1,tol):
 
     fx0 = f(x0)
     fx1 = f(x1)
-
+    k = 0
+    k_max = 1000
+    
     if(np.abs(fx0)<=tol): # si x0 est déja une racine
         statut = 0
         return [x0,statut]
@@ -13,8 +15,7 @@ def bissection(f,x0,x1,tol):
         return [x1,statut]
 
     if(fx0*fx1<0): # => Deux valeurs de signe opposé => hyp. verifiée
-        k = 0
-        k_max = np.log2(np.abs(x1-x0)/(2*tol))
+        
 
         while (np.abs(x1-x0) > tol): #Tant que l'intervalle est + grand que tol
             x2 = (x0+x1)/2
@@ -39,7 +40,6 @@ def bissection(f,x0,x1,tol):
                 print("Erreur, la bissection ne converge pas vers une racine.")
                 print("Veuillez entrer des autres valeurs qui définissent un intervalle différent de celui des précédentes valeurs.")
                 print("Ou il est possible que la fonction n'est pas continue dans cette intervalle.")
-                print(k)
                 return [1,statut]
 
         statut = 0
@@ -59,7 +59,13 @@ def secante(f,x0,x1,tol):
     k_max = int(np.log2(np.abs(x1-x0)/(2*tol)))
     fx0 = f(x0)
     fx1 = f(x1)
-
+    k = 0
+    
+    if(fx0*fx1>0):
+        statut = 1
+        print("Erreur, les valeurs introduites partagent le même signe.")
+        return [1,statut]
+    
     if(np.abs(fx0-fx1)<=tol):
         statut = 1
         print("Erreur, les valeurs introduites partagent la même ordonnée.")
@@ -82,9 +88,12 @@ def secante(f,x0,x1,tol):
             
         x0, x1 = x1, x2
         fx0, fx1 = fx1, f(x2)
+        
+        k += 1
     else:
         # Si on sort de la boucle sans break, on utilise la bissection
-        print("La méthode de la sécante n'a pas convergé, utilisation de la bissection")
+        print("La méthode de la sécante n'a pas convergé.")
+        print(k)
         statut = 1
         return [x1,statut]
     
