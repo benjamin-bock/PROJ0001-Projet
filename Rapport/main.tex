@@ -211,8 +211,17 @@
 
         En somme, la méthode d'Euler est plus rapide mais peut manquer de précision car cette dernière dépend du pas $h$. Tandis que \texttt{solve\_ivp} est plus précis mais plus coûteux. Privilégier une ou l'autre méthode dépend des besoins du programmeur : précision ou économie de ressources.
         
-    \subsection{Convergence d'Euler en fonction du pas $h$}
-        Une analyse de l'erreur en fonction du pas de temps $h$ a été réalisée en comparant la solution obtenue avec Euler à une solution de référence avec \texttt{solve\_ivp}.
+    \subsection{Convergence d'Euler en fonction de $h$}
+        Une analyse de l'erreur en fonction du pas de temps $h$ a été réalisée en comparant la solution obtenue avec Euler à une solution de référence avec \texttt{solve\_ivp}. Pour ce faire, la solution de référence a été interpolée sur les pas d'Euler. Ensuite, l'erreur absolue moyenne pour chaque pas candidat $h_{test}$ a été évaluée comme la moyenne de $\left|T_{Euler}-T_{r\Acute{e}f}\right|$. Celle-ci peut être représentée sur la figure \ref{fig:Optimal}.
+        \begin{figure}
+            \centering
+            \includegraphics[width=1\linewidth]{Rapport/figures/PasEulerOptimal.png}
+            \caption{Détermination de l'erreur moyenne de la méthode d'Euler}
+            \label{fig:Optimal}
+        \end{figure}
+        Remarquons que l'erreur diminue lorsque $h$ diminue, ce qui est cohérent car si le pas diminue, la résolution est d'autant plus précise. De plus, la fonction tracée est linéaire lorsqu'on trace le graphe sur une échelle logarithmique. Cela s'explique par le fait que la méthode d'Euler possède un ordre de convergence égal à 1, ce qui implique une erreur en $O(h)$. Il vient alors de faire un compromis et choisir $h=10^{-2}$ qui est plus précis que $h=10^{-1}$ et plus rapide que $h=10^{-3}$.
+        
+        
 
 
         
