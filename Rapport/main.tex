@@ -134,7 +134,7 @@
         Afin de vérifier que la fonction $G(t)$ a bien été interpolée, traçons l'allure de $G(t)$ sur un graphe à l'aide de la sous-bibliothèque \texttt{pyplot} de \texttt{matplotlib}. Celle-ci nous retourne la figure \ref{fig:PerteEtGain}.
         \begin{figure}
             \centering
-            \includegraphics[width=1\linewidth]{Rapport/figures/PerteEtGain.png}
+            \includegraphics[width=0.94\linewidth]{Rapport/figures/PerteEtGain.png}
             \caption{Allure de la fonction $G(t)$}
             \label{fig:PerteEtGain}
         \end{figure}
@@ -171,8 +171,7 @@
         \begin{itemize}
             \item Si $\texttt{t} \in [0,4]$ :
             $T_w = 18\degree C = 291,15 K$
-            \item Sinon :
-            Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
+            \item i $\texttt{t} \in \: ]4, 24]$: Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
         \end{itemize}
         Les dérivées des température à retourner doivent être multiplier par $3600$ afin de passer de $K/s$ à $K/h$.
         
@@ -185,7 +184,7 @@
         où $f(t_i, T_i)$ représente \texttt{odefunction(t[i], T[i])} et $h$ est le pas.
         Les paramètres de la fonction sont
         \begin{itemize}
-            \item \texttt{[t0,tf]} : l'intervalle de temps sur lequel résoudre le système d'EDO,
+            \item \texttt{[t0,tf]} : l'intervalle de temps sur lequel résoudre le système d'équations différentielles ordinaires,
             \item \texttt{T0} : les valeurs de température initiales, toutes égales à $15\degree C$,
             \item \texttt{h} : le pas, représentant l'intervalle entre deux points consécutifs dans la discrétisation du temps.
         \end{itemize}
@@ -204,8 +203,8 @@
         
         \begin{figure}
             \centering
-            \includegraphics[width=1\linewidth]{Rapport/figures/ComparaisonEulerRK45.png}
-            \caption{Comparaison entre Euler et Runge-Kutta 45}
+            \includegraphics[width=0.94\linewidth]{Rapport/figures/ComparaisonEulerRK45.png}
+            \caption{Comparaison des températures entre Euler et Runge-Kutta 45}
             \label{fig:Comparaison}
         \end{figure}
 
@@ -215,11 +214,35 @@
         Une analyse de l'erreur en fonction du pas de temps $h$ a été réalisée en comparant la solution obtenue avec Euler à une solution de référence avec \texttt{solve\_ivp}. Pour ce faire, la solution de référence a été interpolée sur les pas d'Euler. Ensuite, l'erreur absolue moyenne pour chaque pas candidat $h_{test}$ a été évaluée comme la moyenne de $\left|T_{Euler}-T_{r\Acute{e}f}\right|$. Celle-ci peut être représentée sur la figure \ref{fig:Optimal}.
         \begin{figure}
             \centering
-            \includegraphics[width=1\linewidth]{Rapport/figures/PasEulerOptimal.png}
+            \includegraphics[width=0.96\linewidth]{Rapport/figures/PasEulerOptimal.png}
             \caption{Détermination de l'erreur moyenne de la méthode d'Euler}
             \label{fig:Optimal}
         \end{figure}
         Remarquons que l'erreur diminue lorsque $h$ diminue, ce qui est cohérent car si le pas diminue, la résolution est d'autant plus précise. De plus, la fonction tracée est linéaire lorsqu'on trace le graphe sur une échelle logarithmique. Cela s'explique par le fait que la méthode d'Euler possède un ordre de convergence égal à 1, ce qui implique une erreur en $O(h)$. Il vient alors de faire un compromis et choisir $h=10^{-2}$ qui est plus précis que $h=10^{-1}$ et plus rapide que $h=10^{-3}$.
+
+    \subsection{État stationnaire}\label{section:EtatStationnaire}
+        Pour calculer l'évolution des températures jusqu'à atteindre la critère d'arrêt, signe d'état stationnaire,
+        \begin{equation}
+            T_{room}(t_f) - T_{room}(t_f - 24) < 0.01\degree C
+        \end{equation}
+        il suffit de de résoudre le système d'équations différentielles ordinaires pour 24 heures, en boucle, en remplaçant les températures initiales par les températures finales calculées après chaque fin de journée, jusqu'à satisfaire le critère d'arrêt et donc atteindre l'état stationnaire du système. Le graphe traçant l’évolution des températures de la pièce et de la partie inférieure du béton en fonction du temps jusqu’à l’état stationnaire est illustré à la figure \ref{fig:convergence}.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.91\linewidth]{Rapport/figures/Convergence.png}
+            \caption{Convergence vers l'état stationnaire des températures de la pièce et de la partie inférieure du béton.}
+            \label{fig:convergence}
+        \end{figure}
+
+    \subsection{Comparer les scénarios}
+        Pour les calculs il suffit de reprendre la démarche de la question \ref{section:EtatStationnaire}, il faut adapter \texttt{odefunction} aux scénarios 2 et 3. \begin{itemize}
+            \item Scénario 2 : 
+                    \begin{itemize}
+                        \item Si $\texttt{t} \in [0,4]$: $T_w = 18\degree C = 291,15 K$
+                        \item Si $\texttt{t} \in \: ]4,13]$: $T_w = 28\degree C = 301,15 K$
+                        \item Si $\texttt{t} \in \: ]13, 24]$: Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
+
+                    \end{itemize}
+        \end{itemize}
         
         
 
