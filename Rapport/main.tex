@@ -7,7 +7,7 @@
 \newcommand{\reportauthorTwo}{Odayfa DAKIR}
 \newcommand{\cidTwo}{S23XXXXX}
 \newcommand{\reportauthorThree}{Yazan SALOUM}
-\newcommand{\cidThree}{S23XXXXX}
+\newcommand{\cidThree}{S2304645}
 \newcommand{\reporttype}{Coursework}
 \bibliographystyle{plain}
 
@@ -70,6 +70,7 @@
                         La fonction $f(x)$ doit être continue dans l'intervalle $[x_0 , x_1]$, soit $f \in C_0([x_0,x1])$. Malheureusement, aucune fonction de la bibliothèque standard Python ne le permet, tout comme les bibliothèques externes \texttt{numpy}, \texttt{scipy} et \texttt{matplotlib}. Il est ainsi impossible de prévoir le caractère de la fonction sur l'intervalle considéré. Supposons pour le projet que la fonction $f(x)$ dont on cherche la racine est bien continue sur l'intervalle. Nous verrons par la suite que cette hypothèse est acceptable car nous étudions un phénomène physique d'évolution de température dans un espace, en trois dimensions, continu, de sorte que la fonction est bien continue sur l'intervalle et l'hypothèse est vérifiée.
         
                 \end{itemize}
+            
             \item 
             Nombre d'appels de la fonction $f(x)$ :
                 \begin{itemize}
@@ -232,17 +233,51 @@
             \caption{Convergence vers l'état stationnaire des températures de la pièce et de la partie inférieure du béton.}
             \label{fig:convergence}
         \end{figure}
+        Remarquons que la température de la pièce converge vers une valeur beaucoup plus faible que celle du béton. Ceci, s'explique par l'influence des flux de chaleur $G(t)$, baissant la température de la pièce tout au long de la journée.
 
     \subsection{Comparer les scénarios}
         Pour les calculs il suffit de reprendre la démarche de la question \ref{section:EtatStationnaire}, il faut adapter \texttt{odefunction} aux scénarios 2 et 3. \begin{itemize}
             \item Scénario 2 : 
                     \begin{itemize}
-                        \item Si $\texttt{t} \in [0,4]$: $T_w = 18\degree C = 291,15 K$
-                        \item Si $\texttt{t} \in \: ]4,13]$: $T_w = 28\degree C = 301,15 K$
+                        \item Si $\texttt{t} \in [0,4]$: $T_w = 18\degree C = 291,15 K$,
+                        \item Si $\texttt{t} \in \: ]4,13]$: $T_w = 28\degree C = 301,15 K$,
                         \item Si $\texttt{t} \in \: ]13, 24]$: Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
 
                     \end{itemize}
+            \item Scénario 3 : 
+                    \begin{itemize}
+                        \item Si $\texttt{t} \in [0,12]$: $T_w$ = $28\degree C = 301,15 K$,
+                        \item Si $\texttt{t} \in \: ]12,24]$: $T_w$ = $18\degree C = 291,15 K$.
+
+                    \end{itemize}
         \end{itemize}
+
+        On obtient ainsi les résultats, pour chaque température, illustrés sur les figures \ref{fig:Troom},
+        \begin{figure}
+            \centering
+            \caption{Convergence des températures suivant les différents scénarios}
+            \begin{subfigure}{0.9\textwidth}
+                \centering
+                \includegraphics[width=1\linewidth]{Rapport/figures/T_c1.png}
+                \caption{Partie supérieure du béton} 
+                \label{fig:Tc1}
+            \end{subfigure}
+            \hfill
+            \begin{subfigure}{0.9\textwidth}
+                \centering
+                \includegraphics[width=1\linewidth]{Rapport/figures/T_c2.png}
+                \caption{Partie inférieur du béton} 
+                \label{fig:Tc2}
+            \end{subfigure}
+            \begin{subfigure}{0.9\textwidth}
+                \centering
+                \includegraphics[width=1\linewidth]{Rapport/figures/T_cc.png}
+                \caption{Partie centrale du béton} 
+                \label{fig:Tcc}
+            \end{subfigure}
+            \label{fig:Scenario}
+        \end{figure}
+        
         
         
 
