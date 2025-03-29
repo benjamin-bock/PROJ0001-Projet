@@ -483,7 +483,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     plt.plot(t_f3, T_f3[:, j], 'o-',  markersize=5, label="Scénario 3")
     
     # On affiche les graphes
-    plt.legend(loc='upper left', bbox_to_anchor=(100/plt.gcf().dpi, 130/plt.gcf().dpi), fontsize=16)
+    plt.legend(loc='upper left', bbox_to_anchor=(90/plt.gcf().dpi, 130/plt.gcf().dpi), fontsize=16)
     plt.show()
 
 
