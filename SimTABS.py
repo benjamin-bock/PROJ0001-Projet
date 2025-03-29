@@ -283,13 +283,15 @@ T_f1 = T_f
 for j in range(len(T0)): #On affiche chaque T[:]
     
     # Scénario 1 (voir question 5) ##############################################
-    plt.figure(figsize=(9, 6))
+    plt.figure(figsize=(8, 6))
+    plt.rc('xtick', labelsize=18)  # Taille police graduations x
+    plt.rc('ytick', labelsize=18)  # Taille police graduations y
     plt.xticks(np.linspace(t_f1[0], t_f1[-1], 10))  # Divise la grille en 8 parts verticales égales
-    plt.plot(t_f1, T_f1[:, j], 'o-', markersize=5, label="Scénario 1")
-    plt.xlabel("Temps (jours)",fontsize=13)
-    plt.ylabel(f"Température finale de \n {nom_T[j]} (°C)",fontsize=15)
+    plt.plot(t_f1, T_f1[:, j], 'o-', markersize=7, label="Scénario 1")
+    plt.xlabel("Temps (jours)",fontsize=18)
+    plt.ylabel(f"Température finale de \n {nom_T[j]} (°C)\n",fontsize=18)
     plt.grid(True)
-    plt.title(f"Évolution de la température de {nom_T[j]},\n en fonction des différents scénarios", fontsize=15)
+    plt.title(f"Évolution de la température \n de {nom_T[j]},\n en fonction des différents scénarios", fontsize=18)
     
     # Scnéario 2 ##############################################################
     
