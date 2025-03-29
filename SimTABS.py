@@ -283,13 +283,13 @@ T_f1 = T_f
 for j in range(len(T0)): #On affiche chaque T[:]
     
     # Scénario 1 (voir question 5) ##############################################
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(9, 6))
     plt.xticks(np.linspace(t_f1[0], t_f1[-1], 10))  # Divise la grille en 8 parts verticales égales
     plt.plot(t_f1, T_f1[:, j], 'o-', markersize=5, label="Scénario 1")
     plt.xlabel("Temps (jours)",fontsize=13)
-    plt.ylabel(f"Température finale de {nom_T[j]} (°C)",fontsize=13)
+    plt.ylabel(f"Température finale de \n {nom_T[j]} (°C)",fontsize=15)
     plt.grid(True)
-    plt.title(f"Évolution de la température de {nom_T[j]}, en fonction des différents scénarios", fontsize=13)
+    plt.title(f"Évolution de la température de {nom_T[j]},\n en fonction des différents scénarios", fontsize=15)
     
     # Scnéario 2 ##############################################################
     
@@ -481,7 +481,7 @@ for j in range(len(T0)): #On affiche chaque T[:]
     plt.plot(t_f3, T_f3[:, j], 'o-',  markersize=5, label="Scénario 3")
     
     # On affiche les graphes
-    plt.legend(loc='upper left', fontsize=13)
+    plt.legend(loc='upper left', bbox_to_anchor=(100/plt.gcf().dpi, 130/plt.gcf().dpi), fontsize=16)
     plt.show()
 
 
