@@ -134,11 +134,11 @@
     \subsection{Vérification graphique}
         Afin de vérifier que la fonction $G(t)$ a bien été interpolée, traçons l'allure de $G(t)$ sur un graphe à l'aide de la sous-bibliothèque \texttt{pyplot} de \texttt{matplotlib}. Celle-ci nous retourne la figure \ref{fig:PerteEtGain}.
         \begin{figure}
-            \centering
+\centering
             \includegraphics[width=0.94\linewidth]{Rapport/figures/PerteEtGain.png}
             \caption{Allure de la fonction $G(t)$}
             \label{fig:PerteEtGain}
-        \end{figure}
+\end{figure}
         Nous remarquons que le fonction a bien interpolée car elle coïncide avec tous les points expérimentaux fournis dans \texttt{PerteEtGain.txt}.
         
 \section{Mise en place de la modélisation}
@@ -179,9 +179,9 @@
     \subsection{Méthode d'Euler}
 
         La méthode d’Euler explicite est une méthode numérique simple d’approximation des solutions d’équations différentielles ordinaires. L’approximation repose sur le processus itératif suivant suivant :
-        \begin{equation}
+\begin{equation}
             T_{i+1} = T_i + h\cdot f(t_i, T_i)
-        \end{equation}
+\end{equation}
         où $f(t_i, T_i)$ représente \texttt{odefunction(t[i], T[i])} et $h$ est le pas.
         Les paramètres de la fonction sont
         \begin{itemize}
@@ -282,7 +282,7 @@
         
 
 
-        
+
 \newpage
 \bibliography{mybib}
 
