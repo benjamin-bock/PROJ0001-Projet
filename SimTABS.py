@@ -608,7 +608,7 @@ def f(delta_t):
     return T_max - T_max_d
 
 # Test de la fonction
-T_max_d = 24.0  # Température maximale souhaitée
+T_max_d = 21  # Température maximale souhaitée
 
 # Points initiaux pour la méthode de la sécante
 delta_t_min = 0.1  # Premier point initial
@@ -796,9 +796,9 @@ t_dernier = t_complet[indices_dernier_jour] - debut_dernier_jour
 T_confort_dernier = T_confort[indices_dernier_jour]
 
 # Période 8h-19h du dernier jour
-masque_periode = (t_dernier >= 8) & (t_dernier <= 19)
-T_confort_periode = T_confort_dernier[masque_periode]
-t_periode = t_dernier[masque_periode]
+intervalle_periode = (t_dernier >= 8) & (t_dernier <= 19)
+T_confort_periode = T_confort_dernier[intervalle_periode]
+t_periode = t_dernier[intervalle_periode]
 
 # Vérification des limites
 conforme = np.all((T_confort_periode >= 19.5) & (T_confort_periode <= 24))
