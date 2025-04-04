@@ -34,7 +34,7 @@ R =         [cc-c1,  x,   c2-cc,   r-s,  s-c2,   w]'''
 R = np.array([0.05, 0.025 , 0.02  , 0.1, 0.183, 0.15]) 
 
 nom_T = ["la pièce, T_room", "l'eau dans les tubes, T_t", "la partie centrale du béton, T_cc", "la partie supérieure du béton, T_c1", "la partie inférieure du béton, T_c2",] 
-
+nom_T_x = ["room", "t", "cc", "c1", "c2"]
 # Question 3.1 ##############################################################################################################
 
 def odefunction(t, T):
@@ -100,9 +100,10 @@ tspan = [t0, tf]
 
 Euler = calculTemperaturesEuler(tspan, T0, h)
 
+color_euler = ['darkgreen', 'darkblue', 'darkred', 'goldenrod', 'purple']
 plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
-    plt.plot(Euler[0], Euler[1][k, :], 'o-', markersize=5, label="Euler") # Tracer Euler
+    plt.plot(Euler[0], Euler[1][k, :], 'o-', color=color_euler[k], markersize=2.5, label="Euler - T_"+nom_T_x[k]) # Tracer Euler
 plt.xlabel("Temps (h)", fontsize=13)
 plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
 plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45", fontsize=13)
@@ -122,8 +123,9 @@ tspan = [t0, tf]
 rtol = 1e-15
 IVP = calculTemperaturesIVP(tspan, T0, rtol)
 
+color_ivp = ['limegreen', 'dodgerblue', 'red', 'yellow', 'magenta']
 for k in range(len(T0)):
-    plt.plot(IVP[0], IVP[1][k, :], 'o-', markersize=5, label="RK45")
+    plt.plot(IVP[0], IVP[1][k, :], 'o-', color=color_ivp[k], markersize=0.5, label="RK45 - T_"+nom_T_x[k])
 plt.grid(True)
 plt.legend(loc='upper left', bbox_to_anchor=(80/plt.gcf().dpi, 70/plt.gcf().dpi))
 plt.show()
