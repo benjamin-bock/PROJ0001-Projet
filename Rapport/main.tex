@@ -38,16 +38,6 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document
-\renewcommand\thesection{0} % Définit le numéro de section à 0
-\section{Introduction}
-
-    Le projet s'inscrit dans le cadre de l'optimisation énergétique des bâtiments et du domaine de la construction en générale. Le but étant d'apporter aux étudiants en première année de bachelier en ingénierie civile des outils modernes de modélisation numérique. Ce projet en veut pour preuve l'utilisation du langage de programmation Python, de loin le langage le plus populaire en 2025. Pour plus d'informations sur ce sujet, voir la source \cite{Tiobe2025}. \\
-    Le sujet de ce projet tourne autour du contrôle de transmission de chaleur aux travers des différents parois qui composent les murs d'une bâtiment thermiquement actif. \\
-    La suite de ce rapport sera consacré à la réponse aux questions posées dans le fichier \texttt{Enonce\_2025.pdf}, où la numération des sections et leurs sous-sections correspondent, respectivement, aux numéros des questions répondues.
-    
-    \renewcommand\thesection{\arabic{section}} % Rétablit la numérotation normale
-    \setcounter{section}{0} % Remet le compteur à 0 pour que la prochaine section soit 1
-
 \section{Recherche de racines}
 
     Cette première question vise à modéliser deux fonctions : \texttt{secante(f,x0,x1,tol)} et \texttt{bissection(f,x0,x1,tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction $f(x)$ donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant à choisir, judicieusement, laquelle des deux se voit être la plus encline à être utilisée dans le contexte rencontré. Ces fonctions doivent retourner un objet de type \textit{list} avec deux valeurs, \texttt{x} et \texttt{statut}.
@@ -300,6 +290,7 @@
 \subsection{4.1}
 
 
+
 \subsection{Question 4.2}
 \begin{figure}
     \centering
@@ -308,12 +299,8 @@
     \label{fig:temperature_confort}
 \end{figure}
 \vspace{0.5cm}
-\subsection{Choix des Paramètres}
 
-L'intervalle choisi est compris entre 0.1 heure et 8.0 heures. Une valeur minimale de 0.1 heure permet d'éviter les instabilités numériques lorsque $\Delta t$ tend vers zéro, notamment en prévenant les divisions par zéro. À l'inverse, une valeur maximale de 8.0 heures couvre les échelles de temps pertinentes pour un cycle thermique quotidien.
-
-La vérification de cet intervalle repose sur le théorème des valeurs intermédiaires. La condition $f(0.1) \cdot f(8.0) < 0$ garantit l'existence d'une racine dans l'intervalle choisi, confirmant ainsi la pertinence de ces bornes.
-
+L'intervalle choisi est compris entre 0.1 et 8 heures. La vérification de cet intervalle repose sur le théorème des valeurs intermédiaires. La condition $f(0.1)\cdot f(8.0) < 0$ garantit l'existence d'une racine dans l'intervalle choisi, confirmant ainsi la pertinence de ces bornes.
 Concernant la tolérance, une précision de $\pm 0.01$ h sur $\Delta t$ est suffisante, car elle induit une variation négligeable de la température maximale $T_{\max}$. Un compromis entre coût de calcul et précision a été adopté : une tolérance plus stricte, par exemple $10^{-5}$, augmenterait significativement le temps de calcul sans apporter de bénéfice pratique notable.
 \subsection*{Méthode de la bissection}
 
