@@ -125,7 +125,8 @@
         Afin de vérifier que la fonction $G(t)$ a bien été interpolée, traçons l'allure de $G(t)$ sur un graphe à l'aide de la sous-bibliothèque \texttt{pyplot} de \texttt{matplotlib}. Celle-ci nous retourne la figure \ref{fig:PerteEtGain}.
         \begin{figure}
             \centering
-            \includegraphics[width=0.94\linewidth]{Rapport/figures/PerteEtGain.png}
+            \includegraphics[width=0.70
+            \linewidth]{Rapport/figures/PerteEtGain.png}
             \caption{Allure de la fonction $G(t)$}
             \label{fig:PerteEtGain}
         \end{figure}
@@ -169,9 +170,9 @@
     \subsection{Méthode d'Euler}
 
         La méthode d’Euler explicite est une méthode numérique simple d’approximation des solutions d’équations différentielles ordinaires. L’approximation repose sur le processus itératif suivant suivant :
-\begin{equation}
-            T_{i+1} = T_i + h\cdot f(t_i, T_i)
-\end{equation}
+        \begin{equation}
+                    T_{i+1} = T_i + h\cdot f(t_i, T_i)
+        \end{equation}
         où $f(t_i, T_i)$ représente \texttt{odefunction(t[i], T[i])} et $h$ est le pas.
         Les paramètres de la fonction sont
         \begin{itemize}
@@ -194,7 +195,7 @@
         
         \begin{figure}
             \centering
-            \includegraphics[width=0.94\linewidth]{Rapport/figures/ComparaisonEulerRK45.png}
+            \includegraphics[width=0.70\linewidth]{Rapport/figures/ComparaisonEulerRK45.png}
             \caption{Comparaison des températures entre Euler et Runge-Kutta 45}
             \label{fig:Comparaison}
         \end{figure}
@@ -205,7 +206,7 @@
         Une analyse de l'erreur en fonction du pas de temps $h$ a été réalisée en comparant la solution obtenue avec Euler à une solution de référence avec \texttt{solve\_ivp}. Pour ce faire, la solution de référence a été interpolée sur les pas d'Euler. Ensuite, l'erreur absolue moyenne pour chaque pas candidat $h_{test}$ a été évaluée comme la moyenne de $\left|T_{Euler}-T_{r\Acute{e}f}\right|$. Celle-ci peut être représentée sur la figure \ref{fig:Optimal}.
         \begin{figure}
             \centering
-            \includegraphics[width=0.96\linewidth]{Rapport/figures/PasEulerOptimal.png}
+            \includegraphics[width=0.70\linewidth]{Rapport/figures/PasEulerOptimal.png}
             \caption{Détermination de l'erreur moyenne de la méthode d'Euler}
             \label{fig:Optimal}
         \end{figure}
@@ -219,7 +220,7 @@
         il suffit de de résoudre le système d'équations différentielles ordinaires pour 24 heures, en boucle, en remplaçant les températures initiales par les températures finales calculées après chaque fin de journée, jusqu'à satisfaire le critère d'arrêt et donc atteindre l'état stationnaire du système. Le graphe traçant l’évolution des températures de la pièce et de la partie inférieure du béton en fonction du temps jusqu’à l’état stationnaire est illustré à la figure \ref{fig:convergence}.
         \begin{figure}
             \centering
-            \includegraphics[width=0.91\linewidth]{Rapport/figures/Convergence.png}
+            \includegraphics[width=0.70\linewidth]{Rapport/figures/Convergence.png}
             \caption{Convergence vers l'état stationnaire des températures de la pièce et de la partie inférieure du béton.}
             \label{fig:convergence}
         \end{figure}
@@ -287,91 +288,53 @@
 
 \section{Régulation automatisée du bâtiment}
 
-\subsection{4.1}
+    \subsection{Détermination de $T_{max}$}
+    
+        Il suffit d'adapter \texttt{odefunction} en fonction de $\Delta t$ et à l'aide de la fonction \texttt{max} et \texttt{argmax} de \texttt{numpy}, il est possible de trouver le point culminant de la température de confort, $T_{max}$, définit selon
+        \begin{equation}
+            T_{max} = \max \left( T_{confort}(t, \Delta t) \right)
+        \end{equation}
+        et d'en imposer une valeur maximale. Cette fonction a permis le dessin de la figure \ref{fig:24h} qui trouve la température de confort maximale pour un $\Delta t = 1 $ fixé arbitrairement.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.70\linewidth]{Rapport/figures/T_confort_24h.png}
+            \caption{Détermination de la température max lors des premières 24h avec $\Delta t = 1$}
+            \label{fig:24h}
+        \end{figure}
+    
+    \subsection{Détermination de $\Delta t_{optimal}$}\label{section:Delta_t_optimal}
 
-
-
-\subsection{Question 4.2}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\textwidth]{Rapport/figures/T_confort_optimal.png} % Ajuste la largeur si nécessaire
-    \caption{Évolution de la température de confort($\Delta t = 4.88h$)}
-    \label{fig:temperature_confort}
-\end{figure}
-\vspace{0.5cm}
-
-L'intervalle choisi est compris entre 0.1 et 8 heures. La vérification de cet intervalle repose sur le théorème des valeurs intermédiaires. La condition $f(0.1)\cdot f(8.0) < 0$ garantit l'existence d'une racine dans l'intervalle choisi, confirmant ainsi la pertinence de ces bornes.
-Concernant la tolérance, une précision de $\pm 0.01$ h sur $\Delta t$ est suffisante, car elle induit une variation négligeable de la température maximale $T_{\max}$. Un compromis entre coût de calcul et précision a été adopté : une tolérance plus stricte, par exemple $10^{-5}$, augmenterait significativement le temps de calcul sans apporter de bénéfice pratique notable.
-\subsection*{Méthode de la bissection}
-
-\begin{itemize}
-    \item Elle a besoin d'un intervalle $[a,b]$ où $f(a)$ et $f(b)$ sont de signes opposés.
-    \item Sa convergence est lente (linéaire).
-    \item C'est une méthode robuste mais peu efficace si l'intervalle initial est mal choisi.
-\end{itemize}
-
-\vspace{0.5cm}
-\subsection*{Méthode de la sécante}
-
-\begin{itemize}
-    \item Elle utilise deux points de départ pour estimer la dérivée et avancer plus vite.
-    \item Elle converge plus rapidement que la bissection (presque superlinéaire).
-    \item Pas besoin d'intervalle où la fonction change de signe.
-    \item Peut échouer si la fonction est irrégulière, mais reste efficace avec une bonne initialisation.
-\end{itemize}
-
-
-\vspace{0.5cm}
- La méthode de la sécante est modulaire en raison de son indépendance vis-à-vis de l’intervalle choisi. Contrairement à la bissection, qui impose un cadre strict en nécessitant un intervalle où la fonction change de signe, la sécante se contente de deux points de départ, sans contrainte particulière sur leur position relative à la racine. Cette flexibilité permet de l’adapter à une grande variété de situations, ce qui renforce son caractère modulaire. Toutefois, cette modularité a une contrepartie : une mauvaise initialisation peut entraîner des erreurs ou ralentir la convergence. Néanmoins, lorsque les points initiaux sont bien choisis, la sécante combine rapidité et adaptabilité, ce qui en fait une méthode plus efficace que la bissection dans de nombreux cas.
-
-
-\section{Question 4.3}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Rapport/figures/T_confort_dernier_jour.png} % Ajuste la largeur si nécessaire
-    \caption{Évolution de la température de confort à l'état stationnaire ($\Delta t = 2.96h$)}
-    \label{fig:temperature_confort}
-\end{figure}
-\vspace{0.5cm}
-
- L’objectif de cette étude est de déterminer la période optimale $\Delta t$ nécessaire pour que la température de confort atteigne une valeur cible $T_{\max_d}$.  
-
-Une fonction représentant l’évolution de la température en fonction de $\Delta t$ a été analysée et une méthode numérique a été employée pour rechercher la valeur optimale de $\Delta t$.
-
-On observe que la température atteint un plateau après environ 4 jours, ce qui signifie que l’état stationnaire est presque atteint.
-
-   
-Les graphiques suivants illustrent l'évolution de la température de confort dans un environnement donné. Le premier graphique représente l'évolution de la température de confort sur une journée. On observe une variation significative au cours de la journée, avec une température minimale enregistrée en début de matinée et une température maximale atteinte en milieu d'après-midi. La courbe bleue montre l'évolution de la température, tandis que les lignes pointillées rouge et verte indiquent respectivement les limites supérieure (24°C) et inférieure (19.5°C) selon la norme EN15251. Durant la période de 8h à 19h, signalée par des lignes verticales en pointillés, on peut voir si la température reste dans l'intervalle de confort défini.
-\begin{figure}[H]
-    \centering
-    \begin{minipage}{0.6\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{Rapport/figures/T_confort_24h.png}
-        \caption{Évolution de la température de confort sur une journée.}
-        \label{fig:journee}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.6\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{Rapport/figures/T_confort_8jours.png}
-        \caption{Évolution de la température de confort sur une période de 8 jours.}
-        \label{fig:periode}
-    \end{minipage}
-\end{figure}
-    \label{fig:confort}
- \vspace{0.8 cm} 
-
-Le deuxième graphique illustre l'évolution de la température de confort sur une période de 8 jours, permettant d'observer la dynamique du système à l'état stationnaire. La courbe bleue montre une variation périodique de la température, avec des pics proches de la limite supérieure et des creux en dessous de la limite inférieure. Cette oscillation met en évidence un comportement cyclique du système thermique. Une tendance légère à la hausse du maximum quotidien est visible, suggérant un ajustement progressif vers un équilibre thermique.
-
-L'analyse des températures enregistrées entre 8h et 19h du dernier jour permet de vérifier la conformité avec la norme EN15251. La température minimale observée durant cette période est de 19.5°C et la température maximale est de 24°C, indiquant que le critère de confort thermique est respecté. Ainsi, le système parvient à maintenir un environnement conforme aux exigences normatives dans ces conditions. le choix du $\Delta t$ optimal a permis de limiter la température maximale à 24°C à l’état stationnaire, garantissant ainsi le respect des normes en vigueur.
-
-
+        Par définition de $\Delta t_{optimal}$, on a
+        \begin{equation}
+            \Delta t_{optimal} = \arg \max_{\Delta t} \left(T_{confort}(t, \Delta t) \right)
+        \end{equation}
+        de sorte que
+        \begin{equation}
+            T_{max}^d = T_{max}(\Delta t_{optimal}) = \max_{\Delta t} \left( T_{max}(\Delta t) \right)
+        \end{equation}
+        La recherche revient donc à trouver la racine de la fonction $f(\Delta t)$ définit comme
+        \begin{equation}
+            f(\Delta t) = T_{max}(\Delta t) - T_{max}^d
+        \end{equation}
+        La méthode de la sécante semble adéquate pour cette tâche car elle converge rapidement et fournit un résultat plus précis que la bissection. Il vient ensuite de choisir l'intervalle compris entre 0.1 et 8 heures. La vérification de cet intervalle repose sur le théorème des valeurs intermédiaires. En effet, La condition $f(0.1)\cdot f(8.0) < 0$ garantit l'existence d'une racine dans l'intervalle choisi, confirmant ainsi la pertinence de ces bornes.
+        Concernant la tolérance, une précision de $\pm 0.01$ h sur $\Delta t$ est suffisante, car elle induit une variation négligeable de la température maximale $T_{\max}$. Un compromis entre coût de calcul et précision a été adopté : une tolérance plus stricte, par exemple $10^{-5}$, augmenterait significativement le temps de calcul sans apporter de bénéfice pratique notable. La détermination de ce $\Delta t_{optimal}$ est représenté à la figure \ref{fig:T_confort_optimal}.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.70\textwidth]{Rapport/figures/T_confort_optimal.png}
+            \caption{Évolution de la température de confort avec $\Delta t_{optimal} = 2.46h$ et $T_{max}^d = 21$\degree C}
+            \label{fig:T_confort_optimal}
+        \end{figure}
         
+    \section{Question 4.3}
+        
+         Il vient de refaire la même chose qu'à la question \ref{section:Delta_t_optimal} mais lorsque le système est à l'état stationnaire. Ainsi, il vient de réutiliser l'implémentation de la question \ref{section:EtatStationnaire}. Il se trouve que celui-ci se stabilise après 
+    
+            
 
 
 
-\newpage
-\bibliography{mybib}
+%\newpage
+%\bibliography{mybib}
 
 
 \end{document}
