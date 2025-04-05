@@ -681,9 +681,13 @@ def simulation_etat_stationnaire4(tspan, T0, h, delta_t, max_jours):
     t_f = []  # Liste pour stocker les temps t de chaque jour
     T_f = []  # Liste pour stocker les températures T de chaque jour
     
+    T_max = [] # Liste pour stocker les T_max de chaque jour
+
     # Conditions initiales
     t_f.append(tspan[0])
     T_f.append(T0)
+
+    T_max.append(T0[0])
     
     # Stocke la température initiale de la pièce
     T_room_jour_prec = T0[0]
@@ -696,6 +700,9 @@ def simulation_etat_stationnaire4(tspan, T0, h, delta_t, max_jours):
         # Stocker t et T dans les listes
         t_f.append(t_4[-1] + jour * (tspan[-1]-tspan[0]))
         T_f.append(T_4[:, -1])
+        
+        T_confort = (T_4[0, :] + T_4[4, :])/2
+        T_max.append(np.max(T_confort))
         
         # Mettre à jour T_room_jour_actuel
         T_room_jour = T_4[0, -1]
@@ -711,7 +718,7 @@ def simulation_etat_stationnaire4(tspan, T0, h, delta_t, max_jours):
         T0 = T_4[:, -1]
         T_room_jour_prec = T_room_jour
             
-    return t_f, T_f, jour+1
+    return t_f, T_f, jour+1, T_max
 
 def f_stationnaire(delta_t):
     """
@@ -722,7 +729,7 @@ def f_stationnaire(delta_t):
         return float('inf')
         
     # Simulation sur plusieurs jours jusqu'à l'état stationnaire
-    nb_jours = 5  # On simule sur 5 jours pour atteindre l'état stationnaire
+    nb_jours = 10  # On simule sur 10 jours pour atteindre l'état stationnaire
     t_complet, T_complet = simulation_complete(tspan, T0, h, delta_t, nb_jours)
     
     # Calcul de la température de confort pour tous les points
@@ -755,7 +762,7 @@ delta_t_optimal = resultat_sec[0]
 print(f"Question 4.3\nPour atteindre une température maximale de {T_max_d}°C à l'état stationnaire: ∆t optimal = {delta_t_optimal:.2f} heures \n")
 
 # Vérification du résultat avec le delta_t optimal trouvé
-t_stat, T_stat, jour_stat = simulation_etat_stationnaire4(tspan, T0, h, delta_t_optimal, max_jours)
+t_stat, T_stat, jour_stat, T_max = simulation_etat_stationnaire4(tspan, T0, h, delta_t_optimal, max_jours)
 T_stat = np.array(T_stat)
 T_confort_final = (T_stat[-1, 0] + T_stat[-1, 4])/2
 print(f"Température maximale atteinte à l'état stationnaire : {T_confort_final:.2f}°C\n")
@@ -766,11 +773,12 @@ T_stat = np.array(T_stat)
 
 # Calcul de la température de confort pour tous les points
 T_confort = (T_stat[:, 0] + T_stat[:, 4])/2
+T_max = np.array(T_max)
 
 plt.figure(figsize=(12, 6))
-plt.plot(t_stat, T_confort, 'b-', label='Température de confort')
+plt.plot(t_stat, T_max, 'b-', label='Température de confort')
 plt.axhline(y=T_max_d, color='g', linestyle='--', label=f'T_max désirée = {T_max_d}°C')
-plt.axhline(y=T_confort[-1], color='r', linestyle='--', label=f'T_max atteinte = {T_confort[-1]:.2f}°C')
+plt.axhline(y=T_max[-1], color='r', linestyle='--', label=f'T_max atteinte = {T_max[-1]:.2f}°C')
 plt.xlabel("Temps (jours)", fontsize=13)
 plt.ylabel("Température de confort (°C)", fontsize=13)
 plt.title(f"Évolution de la température de confort à l'état stationnaire (∆t = {delta_t_optimal:.2f}h)", fontsize=13)

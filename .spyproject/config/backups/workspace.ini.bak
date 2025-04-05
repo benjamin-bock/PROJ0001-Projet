@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['RechercheRacine.py', 'PerteEtGain.txt', 'constante.py', 'SimTABS.py', 'RechercheRacineTest.py', 'PerteEtGain.py', 'README.md', 'TempConfort.py']
+recent_files = ['SimTABS.py', 'RechercheRacine.py']
 
 [main]
 version = 0.2.0
