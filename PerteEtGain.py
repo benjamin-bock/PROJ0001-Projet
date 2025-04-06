@@ -47,11 +47,11 @@ plt.figure(figsize=(10, 6))  # Définit une taille pour éviter les problèmes d
 plt.xticks(np.linspace(t[0], t[-1], 9))  # Divise la grille en 8 parts verticales égales
 plt.plot(heure, flux_chaleur, 'o', label = "Données initiales" )
 plt.plot(t, g(t), label = "Interpolation par spline cublique"  )
-plt.title("Évolution du flux de chaleur, G(t), en fonction du moment de la journée", fontsize=14)
+plt.title("Évolution du flux de chaleur, G(t), en fonction du moment de la journée", fontsize=22)
 plt.grid(True)
-plt.xlabel("Heure (h)", fontsize=13)
-plt.ylabel("Flux de chaleur (W/m²)", fontsize=13)
-plt.legend(fontsize=13)
+plt.xlabel("Heure (h)", fontsize=22)
+plt.ylabel("Flux de chaleur (W/m²)", fontsize=22)
+plt.legend(fontsize=22)
 plt.show()
 
 def G(t):

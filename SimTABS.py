@@ -104,11 +104,11 @@ color_euler = ['darkgreen', 'darkblue', 'darkred', 'goldenrod', 'purple']
 plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
     plt.plot(Euler[0], Euler[1][k, :], 'o-', color=color_euler[k], markersize=0.5, label="Euler - T_"+nom_T_x[k]) # Tracer Euler
-plt.xlabel("Temps (h)", fontsize=13)
-plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
-plt.title("Résultats obtenus avec la méthode d'Euler", fontsize=13)
+plt.xlabel("Temps (h)", fontsize=22)
+plt.ylabel("Température finale de la pièce (°C)", fontsize=22)
+plt.title("Résultats obtenus avec la méthode d'Euler", fontsize=22)
 plt.grid(True)
-plt.legend(loc='upper left', bbox_to_anchor=(80/plt.gcf().dpi, 70/plt.gcf().dpi))
+plt.legend()
 plt.show()
     
 
@@ -130,11 +130,11 @@ color_ivp = ['limegreen', 'dodgerblue', 'red', 'yellow', 'magenta']
 plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
     plt.plot(IVP[0], IVP[1][k, :], 'o-', color=color_ivp[k], markersize=0.5, label="RK45 - T_"+nom_T_x[k])
-plt.xlabel("Temps (h)", fontsize=13)
-plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
-plt.title("Résultats obtenus avec la méthode IVP", fontsize=13)
+plt.xlabel("Temps (h)", fontsize=22)
+plt.ylabel("Température finale de la pièce (°C)", fontsize=22)
+plt.title("Résultats obtenus avec la méthode IVP", fontsize=22)
 plt.grid(True)
-plt.legend(loc='upper left', bbox_to_anchor=(80/plt.gcf().dpi, 70/plt.gcf().dpi))
+plt.legend()
 plt.show()
     
 # Question 3.4 #############################################################################################################
@@ -166,10 +166,10 @@ def comparaisonEulerIVP(t_ref, T_ref, h_test) :
     # Échelle logarithmique pour mieux visualiser la convergence
     plt.xscale('log')  
     plt.yscale('log')
-    plt.xlabel("Pas de temps h (heures)", fontsize=13)
-    plt.ylabel("Erreur absolue moyenne (°C)", fontsize=13)
-    plt.title("Détermination du pas de temps h optimal dans la méthode d'Euler", fontsize=13)
-    plt.legend(fontsize=13)
+    plt.xlabel("Pas de temps h (heures)", fontsize=22)
+    plt.ylabel("Erreur absolue moyenne (°C)", fontsize=22)
+    plt.title("Détermination du pas de temps h optimal dans la méthode d'Euler", fontsize=22)
+    plt.legend(fontsize=22)
     plt.grid()
     plt.show()
     
@@ -274,11 +274,11 @@ plt.xticks(np.linspace(t_f[0], t_f[-1], 10))  # Divise la grille en 8 parts vert
 
 plt.plot(t_f, T_f[:, 0], 'o-', markersize=5, label="T_room") # Tracer 
 plt.plot(t_f, T_f[:, 4], 'o-', markersize=5, label="T_c2") # Tracer T_c2
-plt.xlabel("Temps (jours)", fontsize=13)
-plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
-plt.title("Convergence vers l'état stationnaire", fontsize=13)
+plt.xlabel("Temps (jours)", fontsize=22)
+plt.ylabel("Température finale de la pièce (°C)", fontsize=22)
+plt.title("Convergence vers l'état stationnaire", fontsize=22)
 plt.grid(True)
-plt.legend(fontsize=13)
+plt.legend(fontsize=22)
 plt.show()
     
 # Question 3.6 #########################################################################################################
@@ -595,11 +595,11 @@ plt.xticks(np.linspace(t_4[0], t_4[-1], 9))  # Divise la grille en 8 parts verti
 plt.plot(t_4, T_confort, 'o-', markersize=3, label="Température de confort")
 plt.plot(t_max_plot, T_max,'ro', markersize=8)
 plt.axhline(y=T_max, color='r', linestyle='--', label=f"T_max = {T_max:.2f}°C")
-plt.xlabel("Temps (heures)", fontsize=13)
-plt.ylabel("Température de confort (°C)", fontsize=13)
-plt.title(f"Évolution de la température de confort pour ∆t = {delta_t}", fontsize=13)
+plt.xlabel("Temps (heures)", fontsize=22)
+plt.ylabel("Température de confort (°C)", fontsize=22)
+plt.title(f"Évolution de la température de confort pour ∆t = {delta_t}", fontsize=22)
 plt.grid(True)
-plt.legend(fontsize=13)
+plt.legend(fontsize=22)
 plt.show()
 
 
@@ -644,11 +644,11 @@ plt.plot(t_4, T_confort, 'o-', markersize=3, label="Température de confort")
 plt.plot(t_max_plot, T_max_final, 'ro', markersize=8, label="T_max atteint")
 plt.axhline(y=T_max_d, color='g', linestyle='--', label=f"T_max désirée = {T_max_d}°C")
 plt.axhline(y=T_max_final, color='r', linestyle='--', label=f"T_max atteinte = {T_max_final:.2f}°C")
-plt.xlabel("Temps (heures)", fontsize=13)
-plt.ylabel("Température de confort (°C)", fontsize=13)
-plt.title(f"Évolution de la température de confort pour ∆t optimal = {delta_t_optimal:.2f} heures", fontsize=13)
+plt.xlabel("Temps (heures)", fontsize=22)
+plt.ylabel("Température de confort (°C)", fontsize=22)
+plt.title(f"Évolution de la température de confort pour ∆t optimal = {delta_t_optimal:.2f} heures", fontsize=22)
 plt.grid(True)
-plt.legend(fontsize=13)
+plt.legend(fontsize=22)
 plt.show()   
 
 # QUESTION 4.3 ##############################################################################################################
@@ -845,11 +845,11 @@ plt.axhline(y=24, color='r', linestyle='--', label='Limite supérieure (24°C)')
 plt.axhline(y=19.5, color='g', linestyle='--', label='Limite inférieure (19.5°C)')
 plt.axvline(x=8, color='gray', linestyle=':', label='Période 8h-19h')
 plt.axvline(x=19, color='gray', linestyle=':')
-plt.xlabel("Heure de la journée", fontsize=13)
-plt.ylabel("Température de confort (°C)", fontsize=13)
-plt.title("Température de confort - Dernier jour", fontsize=13)
+plt.xlabel("Heure de la journée", fontsize=22)
+plt.ylabel("Température de confort (°C)", fontsize=22)
+plt.title("Température de confort - Dernier jour", fontsize=22)
 plt.grid(True)
-plt.legend(loc='lower right', fontsize=13)
+plt.legend(loc='lower right', fontsize=22)
 plt.show()
 
 
