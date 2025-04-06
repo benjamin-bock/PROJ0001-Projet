@@ -195,7 +195,14 @@
         
         \begin{figure}
             \centering
-            \includegraphics[width=0.70\linewidth]{Rapport/figures/ComparaisonEulerRK45.png}
+            \begin{subfigure}{0.48\linewidth}
+                            \includegraphics[width=1\linewidth]{Rapport/figures/Euler.png}
+                            \caption{Méthode d'Euler}
+            \end{subfigure}
+            \begin{subfigure}{0.48\linewidth}
+                            \includegraphics[width=1\linewidth]{Rapport/figures/IVP.png}
+                            \caption{Méthode de Runge-Kutta 45}
+            \end{subfigure}
             \caption{Comparaison des températures entre Euler et Runge-Kutta 45}
             \label{fig:Comparaison}
         \end{figure}
@@ -302,7 +309,7 @@
             \label{fig:24h}
         \end{figure}
     
-    \subsection{Détermination de $\Delta t_{optimal}$}\label{section:Delta_t_optimal}
+    \subsection{$\Delta t_{optimal}$ pour 24 heures}\label{section:Delta_t_optimal}
 
         Par définition de $\Delta t_{optimal}$, on a
         \begin{equation}
@@ -325,7 +332,7 @@
             \label{fig:T_confort_optimal}
         \end{figure}
         
-    \section{Question 4.3}
+    \subsection{$\Delta t_{optimal}$ à l'état stationnaire}
         
          Il vient de refaire la même chose qu'à la question \ref{section:Delta_t_optimal} mais lorsque le système est à l'état stationnaire. Dès lors, il suffit de réutiliser l'implémentation de la question \ref{section:EtatStationnaire}. Il se trouve que celui-ci se stabilise après 8 jours, comme le montre la figure \ref{fig:T_confort_main}.
          \begin{figure}
