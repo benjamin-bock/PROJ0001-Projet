@@ -327,10 +327,10 @@
         
     \section{Question 4.3}
         
-         Il vient de refaire la même chose qu'à la question \ref{section:Delta_t_optimal} mais lorsque le système est à l'état stationnaire. Ainsi, il vient de réutiliser l'implémentation de la question \ref{section:EtatStationnaire}. Il se trouve que celui-ci se stabilise après 8 jours, comme le montre la figure \ref{fig:T_confort_main}.
+         Il vient de refaire la même chose qu'à la question \ref{section:Delta_t_optimal} mais lorsque le système est à l'état stationnaire. Dès lors, il suffit de réutiliser l'implémentation de la question \ref{section:EtatStationnaire}. Il se trouve que celui-ci se stabilise après 8 jours, comme le montre la figure \ref{fig:T_confort_main}.
          \begin{figure}
             \centering
-            \begin{subfigure}{0.48\textwidth}
+            \begin{subfigure}{0.50\textwidth}
                 \centering
                 \includegraphics[width=1\linewidth]{Rapport/figures/ConvergenceT_confort.png}
                 \caption{Évolution de $T_{max}$ jusqu'à $T_{max}^d$} 
@@ -343,8 +343,15 @@
                 \caption{Évolution de $T_{confort}$ jusqu'à l'état stationnaire} 
                 \label{fig:8jours}
             \end{subfigure}
-            \caption{Convergence vers l'état stationnaire}
+            \caption{Convergence du système vers l'état stationnaire}
             \label{fig:T_confort_main}
+         \end{figure}
+         Il faut ensuite vérifier que la pièce respecte bel et bien la norme EN15251 imposant de garder une température comprise entre 19.5 et 24\degree C pendant les heures de bureaux, compris entre 8 et 19 heures. En traçant l'évolution de $T_{confort}$ le dernier jour, nous remarquons, à la figure \ref{fig:dernier_jour} que la norme n'est pas respectée tout au début de la journée.
+         \begin{figure}
+             \centering
+             \includegraphics[width=0.70\linewidth]{Rapport/figures/T_confort_dernier_jour.png}
+             \caption{Évolution de $T_{confort}$ à l'état stationnaire}
+             \label{fig:dernier_jour}
          \end{figure}
     
             
