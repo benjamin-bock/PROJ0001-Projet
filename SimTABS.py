@@ -103,11 +103,14 @@ Euler = calculTemperaturesEuler(tspan, T0, h)
 color_euler = ['darkgreen', 'darkblue', 'darkred', 'goldenrod', 'purple']
 plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
-    plt.plot(Euler[0], Euler[1][k, :], 'o-', color=color_euler[k], markersize=2.5, label="Euler - T_"+nom_T_x[k]) # Tracer Euler
+    plt.plot(Euler[0], Euler[1][k, :], 'o-', color=color_euler[k], markersize=0.5, label="Euler - T_"+nom_T_x[k]) # Tracer Euler
 plt.xlabel("Temps (h)", fontsize=13)
 plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
-plt.title("Comparaison des résultats entre Euler et Runge-Kutta 45", fontsize=13)
-
+plt.title("Résultats obtenus avec la méthode d'Euler", fontsize=13)
+plt.grid(True)
+plt.legend(loc='upper left', bbox_to_anchor=(80/plt.gcf().dpi, 70/plt.gcf().dpi))
+plt.show()
+    
 
 # Question 3.3 ##########################################################################################################
 
@@ -124,8 +127,12 @@ rtol = 1e-15
 IVP = calculTemperaturesIVP(tspan, T0, rtol)
 
 color_ivp = ['limegreen', 'dodgerblue', 'red', 'yellow', 'magenta']
+plt.figure(figsize=(10, 6))
 for k in range(len(T0)):
     plt.plot(IVP[0], IVP[1][k, :], 'o-', color=color_ivp[k], markersize=0.5, label="RK45 - T_"+nom_T_x[k])
+plt.xlabel("Temps (h)", fontsize=13)
+plt.ylabel("Température finale de la pièce (°C)", fontsize=13)
+plt.title("Résultats obtenus avec la méthode IVP", fontsize=13)
 plt.grid(True)
 plt.legend(loc='upper left', bbox_to_anchor=(80/plt.gcf().dpi, 70/plt.gcf().dpi))
 plt.show()
