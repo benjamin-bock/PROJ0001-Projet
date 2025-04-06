@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 %NOTE: This report format is 
 
-\newcommand{\reporttitle}{Rapport de Projet : Régulation d’un bâtiment thermiquement actif}
+\newcommand{\reporttitle}{Rapport de Projet : Régulation d'un bâtiment thermiquement actif}
 \newcommand{\reportauthorOne}{Benjamin BOCK}
 \newcommand{\cidOne}{s2304467}
 \newcommand{\reportauthorTwo}{Odayfa DAKIR}
@@ -40,24 +40,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document
 \section{Recherche de racines}
 
-    Cette première question vise à modéliser deux fonctions : \texttt{secante(f,x0,x1,tol)} et \texttt{bissection(f,x0,x1,tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction $f(x)$ donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant à choisir, judicieusement, laquelle des deux se voit être la plus encline à être utilisée dans le contexte rencontré. Ces fonctions doivent retourner un objet de type \textit{list} avec deux valeurs, \texttt{x} et \texttt{statut}.
+    Cette première question vise à modéliser deux fonctions : \texttt{secante(f,x0,x1,tol)} et \texttt{bissection(f,x0,x1,tol)}. Ces fonctions jouent le même rôle, qui est de rechercher la racine d'une fonction $f(x)$ donnée, mais ont des fonctionnements différents. Ainsi, selon le cas, c'est à l'étudiant de choisir, judicieusement, laquelle des deux est la plus appropriée dans le contexte rencontré. Ces fonctions doivent retourner un objet de type \textit{list} avec deux valeurs, \texttt{x} et \texttt{statut}.
     
     \subsection{Bissection}
-            La fonction \texttt{bissection} se base sur la méthode d'analyse numérique éponyme de recherche de racine. Celle-ci prend en arguments la fonction $f(x)$ elle-même, deux points d'abscisses différents et la tolérance d'erreur maximale admissible par l'algorithme. Afin d'assurer le bon fonctionnement de l'algorithme, il vient de vérifier les points suivants :
+            La fonction \texttt{bissection} se base sur la méthode d'analyse numérique éponyme de recherche de racine. Celle-ci prend en arguments la fonction $f(x)$ elle-même, deux points d'abscisses différents et la tolérance d'erreur maximale admissible par l'algorithme. Afin d'assurer le bon fonctionnement de l'algorithme, il faut vérifier les points suivants :
             \begin{enumerate}[label=\roman*.]
             \item Hypothèses de la méthode : 
                 \begin{itemize}
                     \item 
-                        Les images des deux points initiaux, \texttt{x0} et \texttt{x1}, doivent être de signes contraires. Ceci peut-être vérifié en testant le signe de l'expression $f(x_1)f(x_0)$. Ainsi, viennent deux cas possibles :
+                        Les images des deux points initiaux, \texttt{x0} et \texttt{x1}, doivent être de signes contraires. Ceci peut être vérifié en testant le signe de l'expression $f(x_1)f(x_0)$. Ainsi, viennent deux cas possibles :
                         
                         \begin{itemize}
                             \item Cas 1, $f(x_1)f(x_0) < 0$ : \vspace{2mm} \\ 
                             Les deux images sont de signes contraires, l'hypothèse est donc vérifiée. \vspace{2mm} 
                             \item Cas 2, $f(x_1)f(x_0) > 0$ : \vspace{2mm} \\
-                            Les deux images sont de mêmes signes, la méthode de la bissection n'est pas possible sur l'intervalle considéré. On retourne \texttt{statut = 1}.
+                            Les deux images sont de même signe, la méthode de la bissection n'est pas possible sur l'intervalle considéré. On retourne \texttt{statut = 1}.
                         \end{itemize}
                     \item
-                        La fonction $f(x)$ doit être continue dans l'intervalle $[x_0 , x_1]$, soit $f \in C_0([x_0,x1])$. Malheureusement, aucune fonction des bibliothèque autorisées ne permet de vérifier ce caractère. Supposons pour le projet que la fonction $f(x)$ dont on cherche la racine est bien continue sur l'intervalle. Nous verrons par la suite que cette hypothèse est acceptable car nous étudions un phénomène physique d'évolution de température dans un espace, en trois dimensions, continu, de sorte que la fonction est bien continue sur l'intervalle et l'hypothèse est vérifiée.
+                        La fonction $f(x)$ doit être continue dans l'intervalle $[x_0 , x_1]$, soit $f \in C_0([x_0,x1])$. Malheureusement, aucune fonction des bibliothèques autorisées ne permet de vérifier ce caractère. Supposons pour le projet que la fonction $f(x)$ dont on cherche la racine est bien continue sur l'intervalle. Nous verrons par la suite que cette hypothèse est acceptable car nous étudions un phénomène physique d'évolution de température dans un espace, en trois dimensions, continu, de sorte que la fonction est bien continue sur l'intervalle et l'hypothèse est vérifiée.
         
                 \end{itemize}
             
@@ -69,11 +69,11 @@
         \end{enumerate}
     
     \subsection{Sécante}
-        La fonction \texttt{secante} se base sur la méthode d'analyse numérique éponyme de recherche de racine. Son but est le même que la fonction précédente mais possède son lot de différence auxquelles le programmeur doit tenir rigueur. Tout comme \texttt{bissection}, celle-ci prend en arguments la fonction $f(x)$ elle-même, deux points d'abscisses différents et la tolérance d'erreur maximale admissible par l'algorithme. Afin d'assurer le bon fonctionnement de l'algorithme, il vient de vérifier les points suivants :
+        La fonction \texttt{secante} se base sur la méthode d'analyse numérique éponyme de recherche de racine. Son but est le même que la fonction précédente mais possède son lot de différences auxquelles le programmeur doit être rigoureux. Tout comme \texttt{bissection}, celle-ci prend en arguments la fonction $f(x)$ elle-même, deux points d'abscisses différents et la tolérance d'erreur maximale admissible par l'algorithme. Afin d'assurer le bon fonctionnement de l'algorithme, il vient de vérifier les points suivants :
     \begin{enumerate}[label=\roman*.]
         \item Hypothèses de la méthode : 
             \begin{itemize}
-                \item Celles-ci sont exactement les mêmes que pour la bissection. On procède de manière analogue que précédemment.
+                \item Celles-ci sont exactement les mêmes que pour la bissection. On procède de manière analogue à précédemment.
             \end{itemize}
             
         \item 
@@ -87,14 +87,14 @@
     \subsection{Comparaison des deux fonctions}
     
         Le tableau \ref{tab:comparaison} met en évidence les différences entre les deux fonctions \texttt{bissection} et \texttt{secante}. \\
-        Notons que pour les deux fonctions, il est possible de déterminer une approximation du nombre d'itérations maximales en fonction de la tolérance \texttt{tol} et des points initiaux \texttt{x0}, \texttt{x1}. Ceci peut-être donné avec la formule
+        Notons que pour les deux fonctions, il est possible de déterminer une approximation du nombre d'itérations maximales en fonction de la tolérance \texttt{tol} et des points initiaux \texttt{x0}, \texttt{x1}. Ceci peut être donné avec la formule
         
         \begin{equation}
             k_{\text{max}} = \log_2 \left( \frac{|x_1 - x_0|}{2 \cdot \text{tol}} \right).
             \label{eq:k_max}
         \end{equation}
         
-        De plus, en terme de vitesse, la fonction \texttt{secante} s'en sort beaucoup mieux que \texttt{bissection}. Pour comparer les deux, une fonction test $f_{test}(x) = x^{3} - 2x - 5$ a été fournie aux deux fonctions avec les mêmes points initiaux $(x_0,x_1) = (-5,10)$ et la tolérance $10^{-6}$. Les résultats étaient similaires, les deux méthodes ont convergé mais \texttt{secante} prend quasiment deux fois moins de temps à converger que \texttt{bissection}. Selon le \texttt{profiler} de Spyder, la première met 45 µs et la seconde 90 µs en moyenne pour trouver la racine $x = 2$.
+        De plus, en termes de vitesse, la fonction \texttt{secante} s'en sort beaucoup mieux que \texttt{bissection}. Pour comparer les deux, une fonction test $f_{test}(x) = x^{3} - 2x - 5$ a été fournie aux deux fonctions avec les mêmes points initiaux $(x_0,x_1) = (-5,10)$ et la tolérance $10^{-6}$. Les résultats étaient similaires, les deux méthodes ont convergé mais \texttt{secante} prend quasiment deux fois moins de temps à converger que \texttt{bissection}. Selon le \texttt{profiler} de Spyder, la première met 45 µs et la seconde 90 µs en moyenne pour trouver la racine $x = 2$.
         
         \begin{table}
             
@@ -118,10 +118,10 @@
         
 \section{Pertes et gains de chaleur}
     \subsection{Importer \texttt{PerteEtGain.txt}}
-        Pour importer et interpréter des données numériques stockées dans un fichier \texttt{.txt} dans un module Python, on peut utiliser la fonction \texttt{loadtxt} de la bibliothèque \texttt{numpy}. Ceci permet de placer les données du \texttt{.txt} dans un objet de type \textit{Array of float64} de taille [2,25] avec la première ligne qui contient les temps de 0 à 24 heures et la seconde, les flux de chaleur correspondants.
+        Pour importer et interpréter des données numériques stockées dans un fichier \texttt{.txt} dans un module Python, on peut utiliser la fonction \texttt{loadtxt} de la bibliothèque \texttt{numpy}. Cela permet de placer les données du \texttt{.txt} dans un objet de type \textit{Array of float64} de taille [2,25] avec la première ligne qui contient les temps de 0 à 24 heures et la seconde, les flux de chaleur correspondants.
         
     \subsection{Interpoler $G(t)$}
-        L'interpolation de $G(t)$ se fait en discrétisant l'intervalle de temps en un grand nombre de valeurs entre 0 et 24 heures. En l'occurrence, un nombre de 400 points a été choisi afin de garantir une bonne pseudo-continuité. Ce nombre est assez grand pour la suite du projet sans consommer trop de mémoire. Ensuite, il vient d'appeler la fonction \texttt{CubicSpline} de la sous-bibliothèque \texttt{interpolate} de \texttt{scipy}. Ce choix a été motivé par les variations du flux au cours de la journée. En effet, $G(t)$ est décroissant jusque 10 heures, croissant de 10 à 20 heures et de nouveau décroissant jusque minuit. Ce comportement se prête bien à une fonction cubique d'où le choix de \texttt{CubicSpline}. N'ayant pas d'informations sur les conditions aux limites, la valeur de l'argument \texttt{bc\_type} est laissée sur sa valeur par défaut, \texttt{not-a-knot}.
+        L'interpolation de $G(t)$ se fait en discrétisant l'intervalle de temps en un grand nombre de valeurs entre 0 et 24 heures. En l'occurrence, un nombre de 400 points a été choisi afin de garantir une bonne pseudo-continuité. Ce nombre est assez grand pour la suite du projet sans consommer trop de mémoire. Ensuite, il faut appeler la fonction \texttt{CubicSpline} de la sous-bibliothèque \texttt{interpolate} de \texttt{scipy}. Ce choix est motivé par les variations du flux au cours de la journée. En effet, $G(t)$ est décroissant jusque 10 heures, croissant de 10 à 20 heures et de nouveau décroissant jusque minuit. Ce comportement se prête bien à une fonction cubique d'où le choix de \texttt{CubicSpline}. N'ayant pas d'informations sur les conditions aux limites, la valeur de l'argument \texttt{bc\_type} est laissée sur sa valeur par défaut, \texttt{not-a-knot}.
         
     \subsection{Vérification graphique}
         Afin de vérifier que la fonction $G(t)$ a bien été interpolée, traçons l'allure de $G(t)$ sur un graphe à l'aide de la sous-bibliothèque \texttt{pyplot} de \texttt{matplotlib}. Celle-ci nous retourne la figure \ref{fig:PerteEtGain}.
@@ -132,11 +132,11 @@
             \caption{Allure de la fonction $G(t)$}
             \label{fig:PerteEtGain}
         \end{figure}
-        Nous remarquons que le fonction a bien interpolée car elle coïncide avec tous les points expérimentaux fournis dans \texttt{PerteEtGain.txt}.
+        Nous remarquons que la fonction a bien été interpolée car elle coïncide avec tous les points expérimentaux fournis dans \texttt{PerteEtGain.txt}.
         
 \section{Mise en place de la modélisation}
     \subsection{Encodage de \texttt{odefunction}}
-        L'énonce impose qu'\texttt{odefunction} reçoive en arguments les températures en $\degree C$, il faut donc incrémenter chaque température de $273,15\degree C$ pour passer de degré Celsius à Kelvin, ce qui est logique car les équations, traitées par la suite, sont exprimées en Kelvin. La fonction consiste à définir le système d'équations différentielles ordinaires 
+        L'énoncé impose qu'\texttt{odefunction} reçoive en arguments les températures en $\degree C$, il faut donc incrémenter chaque température de $273,15\degree C$ pour passer de degré Celsius à Kelvin, ce qui est logique car les équations, traitées par la suite, sont exprimées en Kelvin. La fonction consiste à définir le système d'équations différentielles ordinaires 
         \begin{equation}
            C_{cc} \frac{dT_{cc}}{dt} = -\frac{1}{R_{cc-c1}} (T_{cc} - T_{c1}) - \frac{1}{R_{x}} (T_{cc} - T_{t}) + \frac{1}{R_{c2-cc}} (T_{c2} - T_{cc})
             \label{eq:Tcc}
@@ -157,21 +157,21 @@
             C_w \frac{dT_t}{dt} = -\frac{1}{R_x} (T_t - T_{cc}) - \frac{1}{R_w} (T_t - T_w)
             \label{eq:Tt}
         \end{equation}
-        où T, R et C représentent respectivement la température ($K$),la résistance thermique ($m²K/W$) et la capacité thermique spécifique ($kJ/m²K$). \\
+        où T, R et C représentent respectivement la température ($K$), la résistance thermique ($m²K/W$) et la capacité thermique spécifique ($kJ/m²K$). \\
         
         
-        Il faut ensuite traiter les différentes valeurs que peut prendre la température de l'eau sein des tubes, $T_w$. Il faut modifier sa valeur en fonction de la valeur courante du temps \texttt{t}.
+        Il faut ensuite traiter les différentes valeurs que peut prendre la température de l'eau dans les tubes, $T_w$. Il faut modifier sa valeur en fonction de la valeur courante du temps \texttt{t}.
         Dans le cas du scénario 1, on a
         \begin{itemize}
             \item Si $\texttt{t} \in [0,4]$ :
             $T_w = 18\degree C = 291,15 K$
-            \item i $\texttt{t} \in \: ]4, 24]$: Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
+            \item Si $\texttt{t} \in \: ]4, 24]$: Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
         \end{itemize}
-        Les dérivées des température à retourner doivent être multiplier par $3600$ afin de passer de $K/s$ à $K/h$.
+        Les dérivées des températures à retourner doivent être multipliées par $3600$ afin de passer de $K/s$ à $K/h$.
         
     \subsection{Méthode d'Euler}
 
-        La méthode d’Euler explicite est une méthode numérique simple d’approximation des solutions d’équations différentielles ordinaires. L’approximation repose sur le processus itératif suivant suivant :
+        La méthode d'Euler explicite est une méthode numérique simple d'approximation des solutions d'équations différentielles ordinaires. L'approximation repose sur le processus itératif suivant :
         \begin{equation}
                     T_{i+1} = T_i + h\cdot f(t_i, T_i)
         \end{equation}
@@ -185,7 +185,7 @@
         
     \subsection{Méthode Runge-Kutta d'ordre 4/5}
 
-        La méthode de Runge-Kutta d'ordre 4/5, aussi appelé RK45, utilisée par la fonction \texttt{solve\_ivp} de la sous-bibliothèque \texttt{integrate} de \texttt{scipy}, permet une plus grande précision qu'Euler car elle ajuste dynamiquement le pas pour optimiser la précision de la solution.
+        La méthode de Runge-Kutta d'ordre 4/5, aussi appelée RK45, utilisée par la fonction \texttt{solve\_ivp} de la sous-bibliothèque \texttt{integrate} de \texttt{scipy}, permet une plus grande précision qu'Euler car elle ajuste dynamiquement le pas pour optimiser la précision de la solution.
         Les paramètres de la fonction sont
         \begin{itemize}
             \item \texttt{[t0,tf]} : l'intervalle de temps sur lequel résoudre le système d'EDO,
@@ -222,25 +222,25 @@
         Remarquons que l'erreur diminue lorsque $h$ diminue, ce qui est cohérent car si le pas diminue, la résolution est d'autant plus précise. De plus, la fonction tracée est linéaire lorsqu'on trace le graphe sur une échelle logarithmique. Cela s'explique par le fait que la méthode d'Euler possède un ordre de convergence égal à 1, ce qui implique une erreur en $O(h)$. Il vient alors de faire un compromis et choisir $h=10^{-2}$ qui est plus précis que $h=10^{-1}$ et plus rapide que $h=10^{-3}$.
 
     \subsection{État stationnaire}\label{section:EtatStationnaire}
-        Pour calculer l'évolution des températures jusqu'à atteindre la critère d'arrêt, signe d'état stationnaire,
+        Pour calculer l'évolution des températures jusqu'à atteindre le critère d'arrêt, signe d'état stationnaire,
         \begin{equation}
             T_{room}(t_f) - T_{room}(t_f - 24) < 0.01\degree C
         \end{equation}
-        il suffit de de résoudre le système d'équations différentielles ordinaires pour 24 heures, en boucle, en remplaçant les températures initiales par les températures finales calculées après chaque fin de journée, jusqu'à satisfaire le critère d'arrêt et donc atteindre l'état stationnaire du système. Le graphe traçant l’évolution des températures de la pièce et de la partie inférieure du béton en fonction du temps jusqu’à l’état stationnaire est illustré à la figure \ref{fig:convergence}.
+        il suffit de résoudre le système d'équations différentielles ordinaires pour 24 heures, en boucle, en remplaçant les températures initiales par les températures finales calculées après chaque fin de journée, jusqu'à satisfaire le critère d'arrêt et donc atteindre l'état stationnaire du système. Le graphe traçant l'évolution des températures de la pièce et de la partie inférieure du béton en fonction du temps jusqu'à l'état stationnaire est illustré à la figure \ref{fig:convergence}.
         \begin{figure}
             \centering
             \includegraphics[width=0.70\linewidth]{Rapport/figures/Convergence.png}
             \caption{Convergence vers l'état stationnaire des températures de la pièce et de la partie inférieure du béton.}
             \label{fig:convergence}
         \end{figure}
-        Remarquons que la température de la pièce converge vers une valeur beaucoup plus faible que celle du béton. Ceci, s'explique par l'influence des flux de chaleur $G(t)$, baissant la température de la pièce tout au long de la journée.
+        Remarquons que la température de la pièce converge vers une valeur beaucoup plus faible que celle du béton. Ceci s'explique par l'influence des flux de chaleur $G(t)$, baissant la température de la pièce tout au long de la journée.
 
     \subsection{Comparer les scénarios}
         Pour les calculs il suffit de reprendre la démarche de la question \ref{section:EtatStationnaire}, il faut adapter \texttt{odefunction} aux scénarios 2 et 3. \begin{itemize}
             \item Scénario 2 : 
                     \begin{itemize}
                         \item Si $\texttt{t} \in [0,4]$: $T_w = 18\degree C = 291,15 K$,
-                        \item Si $\texttt{t} \in \: ]4,13]$: $T_w = 28\degree C = 301,15 K$,
+                        \item Si $\texttt{t} \in \: ]4, 13]$: $T_w = 28\degree C = 301,15 K$,
                         \item Si $\texttt{t} \in \: ]13, 24]$: Le dernier terme de l'équation \ref{eq:Tt} peut être rejeté.
 
                     \end{itemize}
@@ -266,7 +266,7 @@
             \begin{subfigure}{0.48\textwidth}
                 \centering
                 \includegraphics[width=1\linewidth]{Rapport/figures/T_c2.png}
-                \caption{Partie inférieur du béton} 
+                \caption{Partie inférieure du béton} 
                 \label{fig:Tc2}
             \end{subfigure}
             \begin{subfigure}{0.48\textwidth}
@@ -299,7 +299,7 @@
 
     \subsection{Détermination de $T_{max}$}
     
-        Il suffit d'adapter \texttt{odefunction} en fonction de $\Delta t$ et à l'aide de la fonction \texttt{max} et \texttt{argmax} de \texttt{numpy}, il est possible de trouver le point culminant de la température de confort, $T_{max}$, définit selon
+        Il suffit d'adapter \texttt{odefunction} en fonction de $\Delta t$ et à l'aide de la fonction \texttt{max} et \texttt{argmax} de \texttt{numpy}, il est possible de trouver le point culminant de la température de confort, $T_{max}$, défini selon
         \begin{equation}
             T_{max} = \max \left( T_{confort}(t, \Delta t) \right)
         \end{equation}
@@ -321,12 +321,12 @@
         \begin{equation}
             T_{max}^d = T_{max}(\Delta t_{optimal}) = \max_{\Delta t} \left( T_{max}(\Delta t) \right)
         \end{equation}
-        La recherche revient donc à trouver la racine de la fonction $f(\Delta t)$ définit comme
+        La recherche revient donc à trouver la racine de la fonction $f(\Delta t)$ définie comme
         \begin{equation}
             f(\Delta t) = T_{max}(\Delta t) - T_{max}^d
         \end{equation}
         La méthode de la sécante semble adéquate pour cette tâche car elle converge rapidement et fournit un résultat plus précis que la bissection. Il vient ensuite de choisir l'intervalle compris entre 0.1 et 8 heures. La vérification de cet intervalle repose sur le théorème des valeurs intermédiaires. En effet, La condition $f(0.1)\cdot f(8.0) < 0$ garantit l'existence d'une racine dans l'intervalle choisi, confirmant ainsi la pertinence de ces bornes.
-        La détermination de ce $\Delta t_{optimal}$ est représenté à la figure \ref{fig:T_confort_optimal}.
+        La détermination de ce $\Delta t_{optimal}$ est représentée à la figure \ref{fig:T_confort_optimal}.
         \begin{figure}
             \centering
             \includegraphics[width=0.70\textwidth]{Rapport/figures/T_confort_optimal.png}
@@ -336,7 +336,7 @@
         
     \subsection{$\Delta t_{optimal}$ à l'état stationnaire}
         
-         Il vient de refaire la même chose qu'à la question \ref{section:Delta_t_optimal} mais lorsque le système est à l'état stationnaire. Dès lors, il suffit de réutiliser l'implémentation de la question \ref{section:EtatStationnaire}. Il se trouve que celui-ci se stabilise après 8 jours, comme le montre la figure \ref{fig:T_confort_main}.
+         Il faut refaire la même chose qu'à la question \ref{section:Delta_t_optimal} mais lorsque le système est à l'état stationnaire. Dès lors, il suffit de réutiliser l'implémentation de la question \ref{section:EtatStationnaire}. Il se trouve que celui-ci se stabilise après 8 jours, comme le montre la figure \ref{fig:T_confort_main}.
          \begin{figure}
             \centering
             \begin{subfigure}{0.50\textwidth}
@@ -355,7 +355,7 @@
             \caption{Convergence du système vers l'état stationnaire}
             \label{fig:T_confort_main}
          \end{figure}
-         Il faut ensuite vérifier que la pièce respecte bel et bien la norme EN15251 imposant de garder une température comprise entre 19.5 et 24\degree C pendant les heures de bureaux, compris entre 8 et 19 heures. En traçant l'évolution de $T_{confort}$ le dernier jour, nous remarquons, à la figure \ref{fig:dernier_jour} que la norme n'est pas respectée tout au début de la journée.
+         Il faut ensuite vérifier que la pièce respecte bel et bien la norme EN15251 imposant de garder une température comprise entre 19.5 et 24\degree C pendant les heures de bureaux, comprises entre 8 et 19 heures. En traçant l'évolution de $T_{confort}$ le dernier jour, nous remarquons, à la figure \ref{fig:dernier_jour} que la norme n'est pas respectée tout au début de la journée.
          \begin{figure}
              \centering
              \includegraphics[width=0.70\linewidth]{Rapport/figures/T_confort_dernier_jour.png}
