@@ -324,7 +324,7 @@
             f(\Delta t) = T_{max}(\Delta t) - T_{max}^d
         \end{equation}
         La méthode de la sécante semble adéquate pour cette tâche car elle converge rapidement et fournit un résultat plus précis que la bissection. Il vient ensuite de choisir l'intervalle compris entre 0.1 et 8 heures. La vérification de cet intervalle repose sur le théorème des valeurs intermédiaires. En effet, La condition $f(0.1)\cdot f(8.0) < 0$ garantit l'existence d'une racine dans l'intervalle choisi, confirmant ainsi la pertinence de ces bornes.
-        Concernant la tolérance, une précision de $\pm 0.01$ h sur $\Delta t$ est suffisante, car elle induit une variation négligeable de la température maximale $T_{\max}$. Un compromis entre coût de calcul et précision a été adopté : une tolérance plus stricte, par exemple $10^{-5}$, augmenterait significativement le temps de calcul sans apporter de bénéfice pratique notable. La détermination de ce $\Delta t_{optimal}$ est représenté à la figure \ref{fig:T_confort_optimal}.
+        La détermination de ce $\Delta t_{optimal}$ est représenté à la figure \ref{fig:T_confort_optimal}.
         \begin{figure}
             \centering
             \includegraphics[width=0.70\textwidth]{Rapport/figures/T_confort_optimal.png}
