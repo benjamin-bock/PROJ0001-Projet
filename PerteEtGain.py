@@ -55,4 +55,5 @@ plt.legend(fontsize=22)
 plt.show()
 
 def G(t):
-    return g(t)
+    t_mod = np.mod(t, 24)  # Périodicité de 24 heures
+    return g(t_mod)
